@@ -15,6 +15,7 @@ int main() {
     Motor_Init();
     PWM_Init();
 	Encoder_Init();
+    Key_GPIO_Config();
     
 //    int ret = atk_ms901m_init(115200);
 //    if (ret != 0)
@@ -28,11 +29,11 @@ int main() {
 
 
 
-    Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
+    //Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_1 = Num_Encoder_Cnt(10,13,30);      
     
-    Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
+    //Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_2 = Num_Encoder_Cnt(10,13,30); 
     
@@ -46,8 +47,20 @@ int main() {
     //int ram = 0;
     //printf("1");
     
+    uint8_t key = 0;
     
 	while(1) {
+        OLED_ShowNum(1, 1, key, 3);
+        
+        key = Key_Scan();
+        
+        
+        switch(key)
+        {
+            case 5:
+                    start_flag = 1;
+                    break;
+        }
        /*
         TIM2->CCR3 = cnt;
         TIM2->CCR4 = cnt;       

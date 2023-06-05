@@ -888,10 +888,10 @@ uint8_t atk_ms901m_set_port_pwm_period(atk_ms901m_port_t port, uint16_t period, 
 }
 
 char str[100];
+atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
 
 void demo_key0_fun(void)
 {
-    atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
     atk_ms901m_gyro_data_t gyro_dat;                   /* 陀螺仪数据 */
     atk_ms901m_accelerometer_data_t accelerometer_dat; /* 加速度计数据 */
     atk_ms901m_magnetometer_data_t magnetometer_dat;   /* 磁力计数据 */

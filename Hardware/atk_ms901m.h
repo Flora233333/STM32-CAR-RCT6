@@ -170,6 +170,8 @@ typedef enum
 #define ATK_MS901M_EINVAL   2                       /* 错误函数参数 */
 #define ATK_MS901M_ETIMEOUT 3                       /* 超时错误 */
 
+extern atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
+
 /* 操作函数 */
 uint8_t atk_ms901m_read_reg_by_id(uint8_t id, uint8_t *dat, uint32_t timeout);                                                                      /* 通过帧ID读取ATK-MS901M寄存器 */
 uint8_t atk_ms901m_write_reg_by_id(uint8_t id, uint8_t len, uint8_t *dat);                                                                          /* 通过帧ID写入ATK-MS901M寄存器 */

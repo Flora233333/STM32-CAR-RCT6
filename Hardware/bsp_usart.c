@@ -1,7 +1,7 @@
 
 #include "bsp_usart.h"
 
-__IO int rxarr[4];
+__IO int rxarr[4] = {middle_loc, 0, 0, 0};
 
  /**
   * @brief  USART GPIO 配置,工作参数配置
@@ -78,8 +78,9 @@ int USART1_IRQHandler(void)
 		Usart_Receive = USART_ReceiveData(USART1);
         
         rxbuf[Count] = Usart_Receive;
+        //OLED_ShowNum(2, 1, Count, 1);
         //printf("%d ", rxbuf[Count]);
-		//确保数组第一个数据为0x7B
+		//确保数组第一个数据为0xFF
         if(rxbuf[Count] == 0xFF || Count > 0) 
 			Count++; 
 		else 

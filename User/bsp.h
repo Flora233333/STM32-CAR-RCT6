@@ -10,6 +10,7 @@
 #include "led.h"
 #include "encoder.h"  
 #include "bsp_usart.h"
+#include "bsp_key.h"  
 #include "atk_ms901m.h"
 #include "timer.h" 
 #include "control.h"
@@ -23,8 +24,8 @@
 #define     Dead_Voltage_2      0
 #define     PWM_Max             3500        // pwm满幅3600
 #define     Rpm_Max             250         // 最大转速
-
-
+#define     middle_loc          160         // 摄像头循迹的中间位置
+#define     I_restrict          3200
 
 
 

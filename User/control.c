@@ -8,8 +8,6 @@ float angle_KP = 0, angle_KI = 0, angle_KD = 0;                 //角度环PID
 
 // dead=0 float Position_KP=0.295,Position_KI=0,Position_KD=0.68;float Incremental_KP=80,Incremental_KI=10,Incremental_KD=0;   /* 增量式PID系数 */
 
-unsigned long long global_time = 0;
-
 int Target_Velocity_1 = 0, Reality_Velocity_1 = 0;   /* 目标速度，实际速度 */
 int Target_Position_1 = 0, Reality_Position_1 = 0;   /* 目标位置，实际位置 */
 

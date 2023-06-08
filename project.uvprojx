@@ -674,6 +674,16 @@
               <FilePath>.\User\control.h</FilePath>
             </File>
             <File>
+              <FileName>task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\task.c</FilePath>
+            </File>
+            <File>
+              <FileName>task.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\task.h</FilePath>
+            </File>
+            <File>
               <FileName>bsp.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\bsp.h</FilePath>

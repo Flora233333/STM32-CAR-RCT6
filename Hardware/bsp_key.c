@@ -22,7 +22,8 @@
   * @param  无
   * @retval 无
   */
-void Key_GPIO_Config(void)
+//默认下拉(适配srb板子)
+void Key_GPIO_Config_1(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -42,6 +43,30 @@ void Key_GPIO_Config(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 
 	//使用结构体初始化按键
 	GPIO_Init(GPIOB, &GPIO_InitStructure);	
+}
+
+
+//默认上拉(适配lj板子)
+void Key_GPIO_Config_2(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	/*开启按键端口的时钟*/
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	
+	//选择按键的引脚
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5; 
+	// 设置按键的引脚为浮空输入
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 
+	//使用结构体初始化按键
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+	//选择按键的引脚
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; 
+	//设置按键的引脚为浮空输入
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 
+	//使用结构体初始化按键
+	GPIO_Init(GPIOA, &GPIO_InitStructure);	
 }
 
  /*
@@ -68,9 +93,18 @@ uint8_t Key_Scan(void)
 	{	 
 		/*等待按键释放 */
         delay_ms(20);
-		while(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5) == KEY_OFF);   
+		while(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5) == KEY_ON);   
         
 		return 	5;	 
+	}
+    
+    if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5) == KEY_ON)  
+	{	 
+		/*等待按键释放 */
+        delay_ms(20);
+		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5) == KEY_ON);   
+        
+		return 	6;	 
 	}
     
     return 0;

@@ -21,7 +21,8 @@
 #define KEY_ON	0
 #define KEY_OFF	1
 
-void Key_GPIO_Config(void);
+void Key_GPIO_Config_1(void);
+void Key_GPIO_Config_2(void);
 uint8_t Key_Scan(void);
 
 

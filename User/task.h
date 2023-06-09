@@ -22,10 +22,6 @@ typedef struct {
 
 int8_t Task_init(void);
 uint64_t Get_nowtime(void);
-void Task_1ms(void);
-void Task_5ms(void);
-void Task_10ms(void);
-void Task_100ms(void);
 void Task_run(void);
 
 #endif

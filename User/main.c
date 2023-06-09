@@ -15,7 +15,7 @@ int main() {
     Motor_Init();
     PWM_Init();
 	Encoder_Init();
-    Key_GPIO_Config();
+    Key_GPIO_Config_2();
     
 //    int ret = atk_ms901m_init(115200);
 //    if (ret != 0)
@@ -37,7 +37,7 @@ int main() {
     
     //Target_Position_2 = Num_Encoder_Cnt(10,13,30); 
     
-    Timer1_InternalClock_Init();
+    //Timer1_InternalClock_Init();
     
 
     
@@ -48,9 +48,11 @@ int main() {
     //printf("1");
     
     uint8_t key = 0;
-    
+    uint8_t num = 0;
+
 	while(1) {
-        OLED_ShowNum(1, 1, key, 3);
+        printf("1");
+        OLED_ShowNum(2, 1, (int)GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5), 3);
         
         key = Key_Scan();
         
@@ -59,6 +61,9 @@ int main() {
         {
             case 5:
                     start_flag = 1;
+                    break;
+            case 6:
+                    OLED_ShowNum(1, 1, num++, 3);
                     break;
         }
        /*

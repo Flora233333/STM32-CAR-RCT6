@@ -22,33 +22,65 @@ uint64_t Get_nowtime(void) {
 	return global_time;
 }
 
-void Task_1ms() {
+void Task_1ms(void) {
 
 
 
 }
 
-void Task_5ms() {
+void Task_5ms(void) {
 
 
 
 }
 
-void Task_10ms() {
+void Task_10ms(void) {
 
 
 
 }
 
-void Task_100ms() {
+void Task_100ms(void) {
 
 
     
 }
 
-void Task_500ms() {
+void Task_500ms(void) {
 
+    
+}
 
+void TIM_Standard_Init(void) {
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE);
+
+    TIM_TimeBaseStructure.TIM_Period = 1000 - 1; // 1ms
+    TIM_TimeBaseStructure.TIM_Prescaler = 72 - 1;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; 
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = DISABLE;
+    TIM_TimeBaseInit(TIM6, &TIM_TimeBaseStructure);
+
+    TIM_ClearITPendingBit(TIM6,TIM_IT_Update); //清空中断状态
+    TIM_ITConfig(TIM6, TIM_IT_Update, ENABLE);
+
+    NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn; 
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; 
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 
+    NVIC_Init(&NVIC_InitStructure); 
+
+    TIM_Cmd(TIM6, ENABLE);
+}
+
+void TIM6_IRQHandler(void) {
+    if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
+        TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+        global_time++;
+    }
 }
 
 int8_t Create_Task(void(*task_func)(void), uint16_t cycle, uint32_t last_run, uint8_t is_live, uint8_t mode, Task_handle * user_handler) {
@@ -100,6 +132,8 @@ int8_t Task_init(void) {
         return _TASK_CREATE_FAILED_;
     }
 
+    TIM_Standard_Init();
+
     return _TASK_CREATE_SUCCESS_;
 }
 
@@ -108,12 +142,22 @@ void Task_run() {
 
     for(i = 0; i < Task_num; i++) {
         
-        if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 0) {
+        if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 0) { // 周期模式
 
             if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
                 sched_tasks[i]->last_run = global_time;
                 sched_tasks[i]->task_func();
             } 
+        }
+        else if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 1) { // 单次任务模式
+
+            if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
+                sched_tasks[i]->last_run = global_time;
+                sched_tasks[i]->is_live = False;
+            } 
+            else {
+                sched_tasks[i]->task_func();
+            }
         }
     }
 }

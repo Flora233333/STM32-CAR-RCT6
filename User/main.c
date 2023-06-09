@@ -8,7 +8,7 @@ int main() {
     
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); //NVIC中断分组
     
-    delay_init(72);                 //=====延时初始化
+    delay_init(72);                 //延时初始化
     LED_Init();
     USART_Config();
     OLED_Init();
@@ -16,6 +16,8 @@ int main() {
     PWM_Init();
 	Encoder_Init();
     Key_GPIO_Config_2();
+
+    Task_init();
     
 //    int ret = atk_ms901m_init(115200);
 //    if (ret != 0)
@@ -66,6 +68,7 @@ int main() {
                     OLED_ShowNum(1, 1, num++, 3);
                     break;
         }
+        
        /*
         TIM2->CCR3 = cnt;
         TIM2->CCR4 = cnt;       

@@ -684,6 +684,11 @@
               <FilePath>.\User\task.h</FilePath>
             </File>
             <File>
+              <FileName>bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\bsp.c</FilePath>
+            </File>
+            <File>
               <FileName>bsp.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\bsp.h</FilePath>

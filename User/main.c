@@ -4,20 +4,11 @@
 char str1[100];
 char str2[100];
 
+uint16_t KeyCode = 0;
+
 int main() {
     
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); //NVIC中断分组
-    
-    delay_init(72);                 //延时初始化
-    LED_Init();
-    USART_Config();
-    OLED_Init();
-    Motor_Init();
-    PWM_Init();
-	Encoder_Init();
-    Key_GPIO_Config_2();
-
-    Task_init();
+    bsp_init();
     
 //    int ret = atk_ms901m_init(115200);
 //    if (ret != 0)
@@ -42,32 +33,21 @@ int main() {
     //Timer1_InternalClock_Init();
     
 
-    
-    
     //int cnt = 0;
     //int flag = 0;
     //int ram = 0;
     //printf("1");
+    //uint8_t num = 0;
     
-    uint8_t key = 0;
-    uint8_t num = 0;
-
 	while(1) {
-        printf("1");
-        OLED_ShowNum(2, 1, (int)GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5), 3);
+        Task_run();
         
-        key = Key_Scan();
+        //printf("1");
+        //OLED_ShowNum(2, 1, (int)GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5), 3);
         
-        
-        switch(key)
-        {
-            case 5:
-                    start_flag = 1;
-                    break;
-            case 6:
-                    OLED_ShowNum(1, 1, num++, 3);
-                    break;
-        }
+        KeyCode = bsp_GetKey();
+        key_map(KeyCode);
+
         
        /*
         TIM2->CCR3 = cnt;

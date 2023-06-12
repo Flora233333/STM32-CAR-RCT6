@@ -21,34 +21,32 @@ Task_handle * Task_500ms_handler = NULL;
 uint64_t Get_nowtime(void) {
 	return global_time;
 }
-
+char str12[1000];
 void Task_1ms(void) {
-
-
-
+    //printf("1ms\r\n");
 }
 
 void Task_5ms(void) {
 
-
+    //printf("5ms\r\n");
 
 }
 
 void Task_10ms(void) {
-
-
+    bsp_KeyScan10ms();
+    //printf("10ms\r\n");
 
 }
 
 void Task_100ms(void) {
 
-
+    //printf("100ms\r\n");
     
 }
 
 void Task_500ms(void) {
 
-    
+    //printf("500ms\r\n");
 }
 
 void TIM_Standard_Init(void) {
@@ -79,6 +77,7 @@ void TIM_Standard_Init(void) {
 void TIM6_IRQHandler(void) {
     if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
         TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+        //printf("TIM6_IRQHandler\n");
         global_time++;
     }
 }

@@ -28,6 +28,7 @@ void bsp_InitKeyHard(void)
 		GPIO_InitStructure.GPIO_Pin = s_gpio_list[i].pin;
 		GPIO_Init(s_gpio_list[i].gpio, &GPIO_InitStructure);	
 	}
+    
 }
 
 

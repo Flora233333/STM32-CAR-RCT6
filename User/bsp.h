@@ -32,7 +32,7 @@
 
 #define     Dead_Voltage_1      0
 #define     Dead_Voltage_2      0
-#define     PWM_Max             3500        // pwm满幅3600
+#define     PWM_Max             3550        // pwm满幅3600
 #define     Rpm_Max             250         // 最大转速
 #define     middle_loc          160         // 摄像头循迹的中间位置
 #define     I_restrict          3200
@@ -45,7 +45,8 @@
 
 
 
-// 按键功能定义
+// 按键功能定义(左边为自定义功能名称)
+
 #define KEY_DOWN_K1		KEY_1_DOWN
 #define KEY_UP_K1		KEY_1_UP
 #define KEY_LONG_K1		KEY_1_LONG
@@ -58,12 +59,15 @@
 #define KEY_UP_K3		KEY_3_UP
 #define KEY_LONG_K3		KEY_3_LONG
 
+#define KEY_DOWN_K4		KEY_4_DOWN
+#define KEY_UP_K4		KEY_4_UP
+#define KEY_LONG_K4		KEY_4_LONG
 
 
 // 板级支持包初始化
 void bsp_init(void);
 void info_print(void);
-void key_map(uint16_t KeyCode);
+void Key_map(uint16_t KeyCode);
 
 
 

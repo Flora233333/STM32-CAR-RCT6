@@ -13,12 +13,10 @@
 #define                 KEY2_GPIO_PORT                  GPIOC		   
 #define                 KEY2_GPIO_PIN		            GPIO_Pin_13
 
-#define                 HARD_KEY_NUM                    3	                                        /* 硬件按键的个数 */
-#define                 KEY_COUNT                       (sizeof(s_gpio_list) / sizeof(X_GPIO_T))	/* 按键的个数 */
+#define                 HARD_KEY_NUM                    3	                                        /* 实际硬件按键的个数 */
+#define                 KEY_COUNT                       (sizeof(s_gpio_list) / sizeof(X_GPIO_T))	/* 配置按键的个数(包括组合按键) */
 #define                 KEY_FILTER_TIME                 5
 #define                 KEY_LONG_TIME                   100			                                /* 单位10ms， 持续1秒，认为长按事件 */
-
-
 
 
 typedef enum
@@ -43,6 +41,10 @@ typedef enum
 	KEY_3_DOWN,				/* 3键按下 */
 	KEY_3_UP,				/* 3键弹起 */
 	KEY_3_LONG,				/* 3键长按 */
+
+    KEY_4_DOWN,				/* 4键按下 */
+	KEY_4_UP,				/* 4键弹起 */
+	KEY_4_LONG,				/* 4键长按 */
 
 } KEY_ENUM;
 

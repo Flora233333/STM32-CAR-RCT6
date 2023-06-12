@@ -10,6 +10,7 @@
 
 
 void LED_Init(void);
-void Led_Flash(u16 time);
+void LED_toggle(void);
+    
     
 #endif

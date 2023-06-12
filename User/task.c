@@ -21,7 +21,7 @@ Task_handle * Task_500ms_handler = NULL;
 uint64_t Get_nowtime(void) {
 	return global_time;
 }
-char str12[1000];
+
 void Task_1ms(void) {
     //printf("1ms\r\n");
 }
@@ -82,7 +82,12 @@ void TIM6_IRQHandler(void) {
     }
 }
 
-int8_t Create_Task(void(*task_func)(void), uint16_t cycle, uint32_t last_run, uint8_t is_live, uint8_t mode, Task_handle * user_handler) {
+int8_t NULL_Transaction(void) {
+    return _Transaction_NULL_;
+}
+
+
+int8_t Create_Task(void(*task_func)(void), uint16_t cycle, uint32_t last_run, uint8_t is_live, uint8_t mode, int8_t(*transaction_func)(void), Task_handle * user_handler) {
     Task_handle * task_handler = NULL;
 
     if (task_func == NULL) {
@@ -110,6 +115,15 @@ int8_t Create_Task(void(*task_func)(void), uint16_t cycle, uint32_t last_run, ui
     task_handler->last_run = last_run;
     task_handler->is_live = is_live;
     task_handler->mode = mode;
+
+    if (task_handler->mode == 2) {
+        task_handler->transaction.Transaction_func = transaction_func;
+    }
+    else {
+        task_handler->transaction.Transaction_func = NULL;
+    }
+
+    
     
     user_handler = task_handler;
     sched_tasks[Task_num++] = user_handler;
@@ -117,14 +131,51 @@ int8_t Create_Task(void(*task_func)(void), uint16_t cycle, uint32_t last_run, ui
     return _TASK_CREATE_SUCCESS_;
 }
 
-int8_t Task_init(void) {
+int8_t Task_Suspend(Task_handle * task_handler) {
+
+    if(task_handler == NULL) {
+        configASSERT("_TASK_HANDLER_NULL_");
+        return _TASK_HANDLER_NULL_;
+    }
+
+    task_handler->is_live = False;
+
+    return _TASK_SLEEP_SUCCESS_;
+}
+
+int8_t Task_Resume(Task_handle * task_handler) {
+
+    if(task_handler == NULL) {
+        configASSERT("_TASK_HANDLER_NULL_");
+        return _TASK_HANDLER_NULL_;
+    }
+
+    task_handler->is_live = True;
+    task_handler->last_run = global_time;
+
+    return _TASK_RESUME_SUCCESS_;
+}
+
+int8_t Task_Delay(Task_handle * task_handler, uint32_t time) { //ms
+    
+        if(task_handler == NULL) {
+            configASSERT("_TASK_HANDLER_NULL_");
+            return _TASK_HANDLER_NULL_;
+        }
+    
+        task_handler->last_run = global_time + time;
+    
+        return _TASK_DELAY_SUCCESS_;
+}
+
+int8_t Task_Init(void) {
     uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0;
     
-    err1 = Create_Task(Task_1ms, 1, 0, True, 0, Task_1ms_handler);
-    err2 = Create_Task(Task_5ms, 5, 0, True, 0, Task_5ms_handler);
-    err3 = Create_Task(Task_10ms, 10, 0, True, 0, Task_10ms_handler);
-    err4 = Create_Task(Task_100ms, 100, 0, True, 0, Task_100ms_handler);
-    err5 = Create_Task(Task_500ms, 500, 0, True, 0, Task_500ms_handler);
+    err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, Task_1ms_handler);
+    err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, Task_5ms_handler);
+    err3 = Create_Task(Task_10ms, 10, 0, True, 0, NULL, Task_10ms_handler);
+    err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, Task_100ms_handler);
+    err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, Task_500ms_handler);
 
     if (err1 || err2 || err3 || err4 || err5) {
         configASSERT("_TASK_CREATE_FAILED_");
@@ -136,7 +187,7 @@ int8_t Task_init(void) {
     return _TASK_CREATE_SUCCESS_;
 }
 
-void Task_run() {
+int8_t Task_Run() {
     uint8_t i = 0;
 
     for(i = 0; i < Task_num; i++) {
@@ -145,7 +196,14 @@ void Task_run() {
 
             if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
                 sched_tasks[i]->last_run = global_time;
-                sched_tasks[i]->task_func();
+
+                if(sched_tasks[i]->task_func != NULL)
+                    sched_tasks[i]->task_func();
+                else {
+                    configASSERT("_TASK_FUNC_NULL_");
+                    return _TASK_FUNC_NULL_;
+                }
+
             } 
         }
         else if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 1) { // 单次任务模式
@@ -155,8 +213,32 @@ void Task_run() {
                 sched_tasks[i]->is_live = False;
             } 
             else {
-                sched_tasks[i]->task_func();
+
+                if(sched_tasks[i]->task_func != NULL)
+                    sched_tasks[i]->task_func();
+                else {  
+                    configASSERT("_TASK_FUNC_NULL_");
+                    return _TASK_FUNC_NULL_;
+                }
+                    
             }
         }
+        else if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 2) { // 事务模式
+
+            if(sched_tasks[i]->transaction.Transaction_func == NULL) {
+                configASSERT("_TASK_TRANSACTION_FUNC_NULL_");
+                return _TRANSACTION_FUNC_NULL_;
+            }
+            else {
+
+                if(sched_tasks[i]->transaction.Transaction_func() == _TRANSACTION_TRIGGERING_) {
+                    sched_tasks[i]->task_func();
+                    sched_tasks[i]->last_run = global_time;
+                }
+                
+            }
+
+        }
     }
+    return _TASK_RUN_SUCCESS_;
 }

@@ -40,13 +40,13 @@ int main() {
     //uint8_t num = 0;
     
 	while(1) {
-        Task_run();
+        Task_Run();
         
         //printf("1");
         //OLED_ShowNum(2, 1, (int)GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5), 3);
         
         KeyCode = bsp_GetKey();
-        key_map(KeyCode);
+        Key_map(KeyCode);
 
         
        /*

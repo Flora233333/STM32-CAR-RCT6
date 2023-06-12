@@ -12,7 +12,7 @@ void bsp_init(void) {
 	Encoder_Init();
     bsp_key_init();
 
-    Task_init();
+    Task_Init();
 }
 
 void info_print(void) {
@@ -24,7 +24,7 @@ void info_print(void) {
     printf("SCHOOL:XTU\r\n");
 }
 
-void key_map(uint16_t KeyCode) {
+void Key_map(uint16_t KeyCode) {
     if (KeyCode != KEY_NONE)
     {
         //printf("ucKeyCode = %d\r\n", ucKeyCode);

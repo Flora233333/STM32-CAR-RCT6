@@ -3,9 +3,9 @@
 
 #include "bsp.h"                  // Device header
 
-#define     GPIOx                       GPIOA
-#define     RCC_APB2Periph_GPIOx        RCC_APB2Periph_GPIOA
-#define     PIN                         GPIO_Pin_15
+#define     GPIOx                       GPIOB
+#define     RCC_APB2Periph_GPIOx        RCC_APB2Periph_GPIOB
+#define     PIN                         GPIO_Pin_8
 #define     GPIOMode                    GPIO_Mode_Out_PP
 
 

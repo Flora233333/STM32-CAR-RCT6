@@ -103,6 +103,18 @@ void TIM1_UP_IRQHandler() {
 	}
 }
 
+
+int forwardfeedback(float in) {
+    static float last_in = 0, Ta = 0.0785, Tb = 379 / 0.36;
+    float out = 0;
+    out = Ta * (in - last_in) / 0.01 + Tb * in; // 对时间求导，0.01为采样时间 PD前馈(Ta*s + Tb)
+    // 这里是因为我Ta, Tb都是1(因为不知道怎么调)，所以直接相加了
+    last_in = in;
+    return out;
+}
+
+
+
 /**************************************************************************
 函数功能：位置式PID控制器
 入口参数：实际位置，目标位置

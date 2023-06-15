@@ -27,25 +27,30 @@ void Task_1ms(void) {
 }
 
 void Task_5ms(void) {
-
+    
+    if (MPU_FLAG == 1) {
+        MPU_Read();
+        DATA_Report();
+    }
     //printf("5ms\r\n");
 
 }
 
 void Task_10ms(void) {
     bsp_KeyScan10ms();
+    
     //printf("10ms\r\n");
 
 }
 
 void Task_100ms(void) {
-
+    
     //printf("100ms\r\n");
     
 }
 
 void Task_500ms(void) {
-
+    LED_toggle(); 
     //printf("500ms\r\n");
 }
 

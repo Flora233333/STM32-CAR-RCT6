@@ -11,6 +11,19 @@ void bsp_init(void) {
     PWM_Init();
 	Encoder_Init();
     bsp_key_init();
+    
+//    int ret = atk_ms901m_init(115200);
+//    if (ret != 0)
+//    {
+//        OLED_ShowString(1, 1,"IMU err");
+//        while (1)
+//        {
+//            delay_ms(200);
+//        }
+//    }  
+    
+    MPU_Init();
+    DMP_Init();
 
     Task_Init();
 }
@@ -31,6 +44,7 @@ void Key_map(uint16_t KeyCode) {
         switch (KeyCode)
         {
             case KEY_DOWN_K1:			/* K1键按下 */
+                start_flag = 1;
                 printf("K1键按下\r\n");
                 break;
 
@@ -64,6 +78,30 @@ void Key_map(uint16_t KeyCode) {
 
             case KEY_LONG_K3:	        /* K3键长按 */
                 printf("K3键长按\r\n");
+                break;
+            
+             case KEY_DOWN_K4:			
+                printf("K4键按下\r\n");
+                break;
+
+            case KEY_UP_K4:				
+                printf("K4键弹起\r\n");
+                break;
+
+            case KEY_LONG_K4:	        
+                printf("K4键长按\r\n");
+                break;
+
+            case KEY_DOWN_K5:			
+                printf("K5键按下\r\n");
+                break;
+
+            case KEY_UP_K5:				
+                printf("K5键弹起\r\n");
+                break;
+
+            case KEY_LONG_K5:	        
+                printf("K5键长按\r\n");
                 break;
                 
             default:

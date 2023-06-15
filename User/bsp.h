@@ -8,12 +8,14 @@
 #include "PWM.h"
 //#include "Timer.h"
 #include "led.h"
+#include "Beep.h"
 #include "encoder.h"  
 #include "bsp_usart.h"
 #include "bsp_key.h"  
 #include "atk_ms901m.h"
 #include "timer.h" 
 #include "control.h"
+#include "MPU6050.h"
 #include "task.h"
 
 #include <stdio.h>
@@ -47,21 +49,28 @@
 
 // 按键功能定义(左边为自定义功能名称)
 
-#define KEY_DOWN_K1		KEY_1_DOWN
-#define KEY_UP_K1		KEY_1_UP
-#define KEY_LONG_K1		KEY_1_LONG
+#define             KEY_DOWN_K1		        KEY_1_DOWN
+#define             KEY_UP_K1		        KEY_1_UP
+#define             KEY_LONG_K1		        KEY_1_LONG
 
-#define KEY_DOWN_K2		KEY_2_DOWN
-#define KEY_UP_K2		KEY_2_UP
-#define KEY_LONG_K2		KEY_2_LONG
+#define             KEY_DOWN_K2		        KEY_2_DOWN
+#define             KEY_UP_K2		        KEY_2_UP
+#define             KEY_LONG_K2		        KEY_2_LONG
 
-#define KEY_DOWN_K3		KEY_3_DOWN
-#define KEY_UP_K3		KEY_3_UP
-#define KEY_LONG_K3		KEY_3_LONG
+#define             KEY_DOWN_K3		        KEY_3_DOWN
+#define             KEY_UP_K3		        KEY_3_UP
+#define             KEY_LONG_K3		        KEY_3_LONG
 
-#define KEY_DOWN_K4		KEY_4_DOWN
-#define KEY_UP_K4		KEY_4_UP
-#define KEY_LONG_K4		KEY_4_LONG
+#define             KEY_DOWN_K4		        KEY_4_DOWN
+#define             KEY_UP_K4		        KEY_4_UP
+#define             KEY_LONG_K4		        KEY_4_LONG
+
+#define             KEY_DOWN_K5             KEY_5_DOWN
+#define             KEY_UP_K5	            KEY_5_UP
+#define             KEY_LONG_K5             KEY_5_LONG
+
+                        
+                        
 
 
 // 板级支持包初始化

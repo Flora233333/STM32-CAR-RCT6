@@ -3,9 +3,11 @@
 
 
 static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] = {
-	{GPIOA, GPIO_Pin_5, 0},		/* K1 */
-	{GPIOB, GPIO_Pin_5, 0},	    /* K2 */
-    {GPIOA, GPIO_Pin_11, 0},     /* K3 */
+	{GPIOB, GPIO_Pin_5, 0},		/* K1 */
+	{GPIOA, GPIO_Pin_11, 0},	    /* K2 */
+    {GPIOA, GPIO_Pin_0, 0},     /* K3 */
+    {GPIOA, GPIO_Pin_4, 0},
+    {GPIOA, GPIO_Pin_5, 0}
 };	
 
 static KEY_T s_tBtn[KEY_COUNT] = {0};
@@ -18,7 +20,8 @@ void bsp_InitKeyHard(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    
 	/* 第2步：配置所有的按键GPIO为浮动输入模式(实际上CPU复位后就是输入状态) */
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   			/* 设置输入 */
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;           /* GPIO速度等级 */

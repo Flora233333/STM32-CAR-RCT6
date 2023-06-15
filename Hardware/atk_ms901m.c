@@ -887,21 +887,21 @@ uint8_t atk_ms901m_set_port_pwm_period(atk_ms901m_port_t port, uint16_t period, 
     return ATK_MS901M_EOK;
 }
 
-char str[100];
+char str[20];
 atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
 
 void demo_key0_fun(void)
 {
-    atk_ms901m_gyro_data_t gyro_dat;                   /* 陀螺仪数据 */
-    atk_ms901m_accelerometer_data_t accelerometer_dat; /* 加速度计数据 */
-    atk_ms901m_magnetometer_data_t magnetometer_dat;   /* 磁力计数据 */
-    atk_ms901m_barometer_data_t barometer_dat;         /* 气压计数据 */
+//    atk_ms901m_gyro_data_t gyro_dat;                   /* 陀螺仪数据 */
+//    atk_ms901m_accelerometer_data_t accelerometer_dat; /* 加速度计数据 */
+//    atk_ms901m_magnetometer_data_t magnetometer_dat;   /* 磁力计数据 */
+//    atk_ms901m_barometer_data_t barometer_dat;         /* 气压计数据 */
     
     /* 获取ATK-MS901数据 */
     atk_ms901m_get_attitude(&attitude_dat, 100);                            /* 获取姿态角数据 */
-    atk_ms901m_get_gyro_accelerometer(&gyro_dat, &accelerometer_dat, 100);  /* 获取陀螺仪、加速度计数据 */
-    atk_ms901m_get_magnetometer(&magnetometer_dat, 100);                    /* 获取磁力计数据 */
-    atk_ms901m_get_barometer(&barometer_dat, 100);                          /* 获取气压计数据 */
+//    atk_ms901m_get_gyro_accelerometer(&gyro_dat, &accelerometer_dat, 100);  /* 获取陀螺仪、加速度计数据 */
+//    atk_ms901m_get_magnetometer(&magnetometer_dat, 100);                    /* 获取磁力计数据 */
+//    atk_ms901m_get_barometer(&barometer_dat, 100);                          /* 获取气压计数据 */
     
     
     sprintf(str,"Yaw : %.02f", attitude_dat.yaw);

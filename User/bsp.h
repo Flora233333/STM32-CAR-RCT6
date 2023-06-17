@@ -16,6 +16,7 @@
 #include "timer.h" 
 #include "control.h"
 #include "MPU6050.h"
+#include "BLU.h"
 #include "task.h"
 
 #include <stdio.h>
@@ -77,7 +78,7 @@
 void bsp_init(void);
 void info_print(void);
 void Key_map(uint16_t KeyCode);
-
+void Test_Encoder(void);
 
 
 #endif

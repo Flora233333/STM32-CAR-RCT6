@@ -5,13 +5,13 @@ void bsp_init(void) {
     
     delay_init(72);                                 //ÑÓÊ±³õÊ¼»¯
     LED_Init();
-    USART_Config();
+    USART1_Config();
     OLED_Init();
     Motor_Init();
     PWM_Init();
 	Encoder_Init();
     bsp_key_init();
-    
+    BLU_Init();
 //    int ret = atk_ms901m_init(115200);
 //    if (ret != 0)
 //    {
@@ -22,8 +22,8 @@ void bsp_init(void) {
 //        }
 //    }  
     
-    MPU_Init();
-    DMP_Init();
+//    MPU_Init();
+//    DMP_Init();
 
     Task_Init();
 }
@@ -109,4 +109,15 @@ void Key_map(uint16_t KeyCode) {
                 break;
         }
     }
+}
+
+void Test_Encoder(void) {
+    char str1[20], str2[20];
+    static int ram1 = 0, ram2 = 0;
+    ram1 = (short)(TIM3 -> CNT);
+    ram2 = (short)(TIM4 -> CNT);
+    sprintf(str1, "A = %d          ", ram1);
+    sprintf(str2, "B = %d          ", ram2);
+    OLED_ShowString(1, 1, str1);
+    OLED_ShowString(2, 1, str2);
 }

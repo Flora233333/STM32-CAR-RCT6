@@ -698,6 +698,16 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\Beep.h</FilePath>
             </File>
+            <File>
+              <FileName>BLU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\BLU.c</FilePath>
+            </File>
+            <File>
+              <FileName>BLU.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\BLU.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

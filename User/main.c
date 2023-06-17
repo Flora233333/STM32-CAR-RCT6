@@ -1,17 +1,10 @@
 #include "bsp.h"                  // Device header
 
-
-char str1[100];
-char str2[100];
-
 uint16_t KeyCode = 0;
 
 int main() {
     
     bsp_init();
-
-    
- 
 
 
 
@@ -28,15 +21,14 @@ int main() {
 
     //int cnt = 0;
     //int flag = 0;
-    //int ram = 0;
     //printf("1");
     //uint8_t num = 0;
     
 	while(1) {
         Task_Run();
         
-        //printf("1");
-        //OLED_ShowNum(2, 1, (int)GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5), 3);
+        //Test_Encoder();
+        //OLED_ShowNum(1,1,rxdata[0],3);
         
         KeyCode = bsp_GetKey();
         Key_map(KeyCode);
@@ -64,16 +56,12 @@ int main() {
         
         //printf("1");
         
-        //ram = (short)(TIM3 -> CNT);
         
         //printf("1");
         //printf("target1=%d, %d\r\n", Target_Position_1, Reality_Position_1);
         //printf("target2=%d, %d\r\n", Target_Position_2, Reality_Position_2);
         //sprintf(str1, "A = %d", Target_Position_1);
-        
-        //sprintf(str2, "B = %d", ram);
-        
-        //OLED_ShowString(2, 1, str1);
+
         
         //OLED_ShowString(3, 1, str2);
         //OLED_Clear();
@@ -86,7 +74,7 @@ int main() {
 //                ram+=50;
 //            Target_Velocity_1 = Rpm_Encoder_Cnt(ram,13,30,10);   /* 将转速转化为10ms的脉冲数，目标速度 */
 //        }
+
         //demo_key0_fun();
-		
 	}
 }

@@ -170,7 +170,9 @@ typedef enum
 #define ATK_MS901M_EINVAL   2                       /* 错误函数参数 */
 #define ATK_MS901M_ETIMEOUT 3                       /* 超时错误 */
 
-extern atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
+extern atk_ms901m_attitude_data_t attitude_dat;     /* 姿态角数据 */
+extern float ANGLE_STATIC_BIAS;                     /* 角度静差 */
+extern float Now_Angle;                             /* 当前角度 */
 
 /* 操作函数 */
 uint8_t atk_ms901m_read_reg_by_id(uint8_t id, uint8_t *dat, uint32_t timeout);                                                                      /* 通过帧ID读取ATK-MS901M寄存器 */
@@ -190,6 +192,6 @@ uint8_t atk_ms901m_get_port_pwm_pulse(atk_ms901m_port_t port, uint16_t *pulse, u
 uint8_t atk_ms901m_set_port_pwm_pulse(atk_ms901m_port_t port, uint16_t pulse, uint32_t timeout);                                                    /* 设置ATK-MS901M指定端口PWM高电平的宽度 */
 uint8_t atk_ms901m_get_port_pwm_period(atk_ms901m_port_t port, uint16_t *period, uint32_t timeout);                                                 /* 获取ATK-MS901M指定端口PWM周期 */
 uint8_t atk_ms901m_set_port_pwm_period(atk_ms901m_port_t port, uint16_t period, uint32_t timeout);                                                  /* 设置ATK-MS901M指定端口PWM周期 */
-void demo_key0_fun(void);
+void Get_Angle(void);
     
 #endif

@@ -5,22 +5,22 @@ void bsp_init(void) {
     
     delay_init(72);                                 //延时初始化
     LED_Init();
-    USART1_Config();
+    USART1_Init();
     OLED_Init();
     Motor_Init();
     PWM_Init();
 	Encoder_Init();
     bsp_key_init();
     BLU_Init();
-//    int ret = atk_ms901m_init(115200);
-//    if (ret != 0)
-//    {
-//        OLED_ShowString(1, 1,"IMU err");
-//        while (1)
-//        {
-//            delay_ms(200);
-//        }
-//    }  
+    int ret = atk_ms901m_init(115200);
+    if (ret != 0)
+    {
+        OLED_ShowString(1, 1,"IMU err");
+        while (1)
+        {
+            delay_ms(200);
+        }
+    }  
     
 //    MPU_Init();
 //    DMP_Init();
@@ -44,7 +44,7 @@ void Key_map(uint16_t KeyCode) {
         switch (KeyCode)
         {
             case KEY_DOWN_K1:			/* K1键按下 */
-                start_flag = 1;
+                //start_flag = 1;
                 printf("K1键按下\r\n");
                 break;
 
@@ -57,27 +57,30 @@ void Key_map(uint16_t KeyCode) {
                 break;
 
             case KEY_DOWN_K2:			/* K2键按下 */
-                printf("K2键按下\r\n");
+                //printf("K2键按下\r\n");
                 break;
 
             case KEY_UP_K2:				/* K2键弹起 */
-                printf("K2键弹起\r\n");
+                //printf("K2键弹起\r\n");
+                start_flag = 1;
                 break;
 
             case KEY_LONG_K2:	        /* K2键长按 */
-                printf("K2键长按\r\n");
+                //printf("K2键长按\r\n");
                 break;
 
             case KEY_DOWN_K3:			/* K3键按下 */
-                printf("K3键按下\r\n");
+                //printf("K3键按下\r\n");
                 break;
 
             case KEY_UP_K3:				/* K3键弹起 */
-                printf("K3键弹起\r\n");
+                //printf("K3键弹起\r\n");
+            Target_Velocity_1 = Rpm_Encoder_Cnt(300,13,30,10); 
+            Target_Velocity_2 = Rpm_Encoder_Cnt(300,13,30,10); 
                 break;
 
             case KEY_LONG_K3:	        /* K3键长按 */
-                printf("K3键长按\r\n");
+                //printf("K3键长按\r\n");
                 break;
             
              case KEY_DOWN_K4:			

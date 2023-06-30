@@ -13,6 +13,7 @@
 #include "bsp_usart.h"
 #include "bsp_key.h"  
 #include "atk_ms901m.h"
+#include "gray_i2c.h"
 #include "timer.h" 
 #include "control.h"
 #include "MPU6050.h"
@@ -22,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 //断言（这里是自定义的模拟断言，但没有调用，用 configASSERT(x)来判断，vAssertCalled(char,int)来输出错误信息）
 #define     vAssertCalled(err, char, int)       printf("Error:%s on %s,%d\r\n",err, char, int)

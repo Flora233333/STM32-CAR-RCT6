@@ -889,8 +889,10 @@ uint8_t atk_ms901m_set_port_pwm_period(atk_ms901m_port_t port, uint16_t period, 
 
 char str[20];
 atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
+float ANGLE_STATIC_BIAS = 0;                       /* 角度静差 */
+float Now_Angle = 0;                               /* 当前角度 */
 
-void demo_key0_fun(void)
+void Get_Angle(void)
 {
 //    atk_ms901m_gyro_data_t gyro_dat;                   /* 陀螺仪数据 */
 //    atk_ms901m_accelerometer_data_t accelerometer_dat; /* 加速度计数据 */
@@ -903,8 +905,8 @@ void demo_key0_fun(void)
 //    atk_ms901m_get_magnetometer(&magnetometer_dat, 100);                    /* 获取磁力计数据 */
 //    atk_ms901m_get_barometer(&barometer_dat, 100);                          /* 获取气压计数据 */
     
-    
-    sprintf(str,"Yaw : %.02f", attitude_dat.yaw);
+    Now_Angle = attitude_dat.yaw - ANGLE_STATIC_BIAS;
+    sprintf(str,"Yaw : %.03f", Now_Angle);
     OLED_ShowString(2,1,str);
     
     //delay_ms(10);

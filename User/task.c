@@ -15,6 +15,8 @@ Task_handle * Task_10ms_handler = NULL;
 Task_handle * Task_100ms_handler = NULL;
 Task_handle * Task_500ms_handler = NULL;
 
+Task_handle * Get_Angle_Static_Bias_handler = NULL;
+
 /*****************************************************************************/
 
 
@@ -173,8 +175,17 @@ int8_t Task_Delay(Task_handle * task_handler, uint32_t time) { //ms
         return _TASK_DELAY_SUCCESS_;
 }
 
+/********** 用户任务 **********/
+
+void Get_Angle_Static_Bias(void) {
+    ANGLE_STATIC_BIAS = attitude_dat.yaw;
+}
+
+/****************************/
+
+
 int8_t Task_Init(void) {
-    uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0;
+    uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0, err6 = 0;
     
     err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, Task_1ms_handler);
     err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, Task_5ms_handler);
@@ -182,7 +193,9 @@ int8_t Task_Init(void) {
     err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, Task_100ms_handler);
     err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, Task_500ms_handler);
 
-    if (err1 || err2 || err3 || err4 || err5) {
+    err6 = Create_Task(Get_Angle_Static_Bias, 5000, 0, True, 3, NULL, Get_Angle_Static_Bias_handler);
+
+    if (err1 || err2 || err3 || err4 || err5 || err6) {
         configASSERT("_TASK_CREATE_FAILED_");
         return _TASK_CREATE_FAILED_;
     }
@@ -192,58 +205,82 @@ int8_t Task_Init(void) {
     return _TASK_CREATE_SUCCESS_;
 }
 
+
 int8_t Task_Run() {
     uint8_t i = 0;
 
     for(i = 0; i < Task_num; i++) {
-        
-        if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 0) { // 周期模式
 
-            if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
-                sched_tasks[i]->last_run = global_time;
+        if (sched_tasks[i]->is_live == True) {
 
-                if(sched_tasks[i]->task_func != NULL)
-                    sched_tasks[i]->task_func();
-                else {
-                    configASSERT("_TASK_FUNC_NULL_");
-                    return _TASK_FUNC_NULL_;
-                }
+            switch (sched_tasks[i]->mode)
+            {
 
-            } 
-        }
-        else if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 1) { // 单次任务模式
+            case 0: // 周期任务模式
 
-            if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
-                sched_tasks[i]->last_run = global_time;
-                sched_tasks[i]->is_live = False;
-            } 
-            else {
-
-                if(sched_tasks[i]->task_func != NULL)
-                    sched_tasks[i]->task_func();
-                else {  
-                    configASSERT("_TASK_FUNC_NULL_");
-                    return _TASK_FUNC_NULL_;
-                }
-                    
-            }
-        }
-        else if(sched_tasks[i]->is_live == True && sched_tasks[i]->mode == 2) { // 事务模式
-
-            if(sched_tasks[i]->transaction.Transaction_func == NULL) {
-                configASSERT("_TASK_TRANSACTION_FUNC_NULL_");
-                return _TRANSACTION_FUNC_NULL_;
-            }
-            else {
-
-                if(sched_tasks[i]->transaction.Transaction_func() == _TRANSACTION_TRIGGERING_) {
-                    sched_tasks[i]->task_func();
+                if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
                     sched_tasks[i]->last_run = global_time;
-                }
-                
-            }
 
+                    if(sched_tasks[i]->task_func != NULL)
+                        sched_tasks[i]->task_func();
+                    else {
+                        configASSERT("_TASK_FUNC_NULL_");
+                        return _TASK_FUNC_NULL_;
+                    }
+                } 
+                break;
+
+            case 1: // 单次持续任务模式 
+
+                if(global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
+                    sched_tasks[i]->last_run = global_time;
+                    sched_tasks[i]->is_live = False;
+                } 
+                else {
+
+                    if(sched_tasks[i]->task_func != NULL) 
+                        sched_tasks[i]->task_func();
+                    else {  
+                        configASSERT("_TASK_FUNC_NULL_");
+                        return _TASK_FUNC_NULL_;
+                    }  
+                }
+                break;
+
+            case 2: // 事务模式
+
+                if(sched_tasks[i]->transaction.Transaction_func == NULL) {
+                    configASSERT("_TASK_TRANSACTION_FUNC_NULL_");
+                    return _TRANSACTION_FUNC_NULL_;
+                }
+                else {
+
+                    if(sched_tasks[i]->transaction.Transaction_func() == _TRANSACTION_TRIGGERING_) {
+                        sched_tasks[i]->task_func();
+                        sched_tasks[i]->last_run = global_time;
+                    }
+                }
+                break;
+
+            case 3: //单次任务模式(到时间点只执行一次)
+                if (global_time - sched_tasks[i]->last_run >= sched_tasks[i]->cycle) {
+                    sched_tasks[i]->last_run = global_time;
+                    sched_tasks[i]->is_live = False;
+                    if(sched_tasks[i]->task_func != NULL)
+                        sched_tasks[i]->task_func();
+                    else {
+                        configASSERT("_TASK_FUNC_NULL_");
+                        return _TASK_FUNC_NULL_;
+                    }
+                }
+                break;
+                
+            default:
+                configASSERT("_UNKNOWN_TASK_MODE_");
+                return _UNKNOWN_TASK_MODE_;
+            }
         }
     }
+
     return _TASK_RUN_SUCCESS_;
 }

@@ -30,6 +30,7 @@
 
 extern __IO int rxarr[4];
 
-void USART_Config(void);
+void USART1_Init(void);
+void UART4_Init(void);
 
 #endif /* __USART_H */

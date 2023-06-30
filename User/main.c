@@ -8,15 +8,15 @@ int main() {
 
 
 
-    //Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
+    Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_1 = Num_Encoder_Cnt(10,13,30);      
     
-    //Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
+    Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_2 = Num_Encoder_Cnt(10,13,30); 
     
-    //Timer1_InternalClock_Init();
+    Timer1_InternalClock_Init();
     
 
     //int cnt = 0;
@@ -26,7 +26,8 @@ int main() {
     
 	while(1) {
         Task_Run();
-        
+        Get_Angle();
+
         //Test_Encoder();
         //OLED_ShowNum(1,1,rxdata[0],3);
         
@@ -75,6 +76,6 @@ int main() {
 //            Target_Velocity_1 = Rpm_Encoder_Cnt(ram,13,30,10);   /* 将转速转化为10ms的脉冲数，目标速度 */
 //        }
 
-        //demo_key0_fun();
+        
 	}
 }

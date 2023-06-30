@@ -70,6 +70,7 @@ void USART3_IRQHandler(void)
                 BLU_rxdata[0] = rxbuf[0];
                 BLU_rxdata[1] = rxbuf[1];
                 BLU_rxdata[2] = rxbuf[2];
+                //OLED_ShowNum(1,1,BLU_rxdata[1],2);
             }
             
         }

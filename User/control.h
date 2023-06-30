@@ -19,5 +19,6 @@ int Position_PID_right(int reality,int target);
 int Incremental_PID_left(int reality,int target);       
 int Incremental_PID_right(int reality,int target);  
 int Trace_PID(int reality,int target);
+int Angle_PID(int reality,int target);
 
 #endif

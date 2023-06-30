@@ -11,6 +11,7 @@ void bsp_init(void) {
     PWM_Init();
 	Encoder_Init();
     bsp_key_init();
+    Gray_Init();
     BLU_Init();
     int ret = atk_ms901m_init(115200);
     if (ret != 0)
@@ -36,6 +37,9 @@ void info_print(void) {
     printf("Version:1.0\r\n");
     printf("SCHOOL:XTU\r\n");
 }
+
+int test_angle[2] = {90, -90};
+int i = 0;
 
 void Key_map(uint16_t KeyCode) {
     if (KeyCode != KEY_NONE)
@@ -75,8 +79,12 @@ void Key_map(uint16_t KeyCode) {
 
             case KEY_UP_K3:				/* K3键弹起 */
                 //printf("K3键弹起\r\n");
-            Target_Velocity_1 = Rpm_Encoder_Cnt(300,13,30,10); 
-            Target_Velocity_2 = Rpm_Encoder_Cnt(300,13,30,10); 
+                
+                Target_angle = test_angle[i++];
+                if(i == 2)
+                    i = 0;
+            //Target_Velocity_1 = Rpm_Encoder_Cnt(300,13,30,10); 
+            //Target_Velocity_2 = Rpm_Encoder_Cnt(300,13,30,10); 
                 break;
 
             case KEY_LONG_K3:	        /* K3键长按 */

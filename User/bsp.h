@@ -41,6 +41,8 @@
 #define     Rpm_Max             250         // 最大转速
 #define     middle_loc          160         // 摄像头循迹的中间位置
 #define     I_restrict          3200
+#define     Kc                  0.5         // 抗积分饱和系数
+
 
 
 // 任务系统配置界面

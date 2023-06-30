@@ -27,7 +27,7 @@ int main() {
 	while(1) {
         Task_Run();
         Get_Angle();
-
+        //printf("d:%.2f, %d\n",Now_Angle, Target_angle);
         //Test_Encoder();
         //OLED_ShowNum(1,1,rxdata[0],3);
         

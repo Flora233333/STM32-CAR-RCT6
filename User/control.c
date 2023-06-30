@@ -182,35 +182,36 @@ int Position_PID_right(int reality,int target)
 **************************************************************************/
 int Incremental_PID_left(int reality,int target)  
 { 	
-	 static float Bias,pwm,Last_bias=0,Prev_bias=0;
-    
-	 Bias=target-reality;                                   /* 计算偏差 */
-    
-	 pwm += (Incremental_KP_1*(Bias-Last_bias))               /* 比例环节 */
-           +(Incremental_KI_1*Bias)                           /* 积分环节 */
-           +(Incremental_KD_1*(Bias-2*Last_bias+Prev_bias));  /* 微分环节 */ 
-    
-     Prev_bias=Last_bias;                                   /* 保存上上次偏差 */
-	 Last_bias=Bias;	                                    /* 保存上一次偏差 */
-    
-	 return pwm;                                            /* 输出结果 */
+	static float Bias,pwm,Last_bias=0,Prev_bias=0;
+
+	Bias=target-reality;                                   /* 计算偏差 */
+
+	pwm += (Incremental_KP_1*(Bias-Last_bias))               /* 比例环节 */
+          +(Incremental_KI_1*Bias)                           /* 积分环节 */
+          +(Incremental_KD_1*(Bias-2*Last_bias+Prev_bias));  /* 微分环节 */ 
+
+    Prev_bias=Last_bias;                                   /* 保存上上次偏差 */
+	Last_bias=Bias;	                                    /* 保存上一次偏差 */
+
+	return pwm;                                            /* 输出结果 */
 }
 
 int Incremental_PID_right(int reality,int target)
 { 	
-	 static float Bias,pwm,Last_bias=0,Prev_bias=0;
-    
-	 Bias=target-reality;                                   /* 计算偏差 */
-    
-	 pwm += (Incremental_KP_2*(Bias-Last_bias))               /* 比例环节 */
-           +(Incremental_KI_2*Bias)                           /* 积分环节 */
-           +(Incremental_KD_2*(Bias-2*Last_bias+Prev_bias));  /* 微分环节 */ 
-    
-     Prev_bias=Last_bias;                                   /* 保存上上次偏差 */
-	 Last_bias=Bias;	                                    /* 保存上一次偏差 */
-    
-	 return pwm;                                            /* 输出结果 */
+	static float Bias,pwm,Last_bias=0,Prev_bias=0;
+
+	Bias=target-reality;                                   /* 计算偏差 */
+
+	pwm += (Incremental_KP_2*(Bias-Last_bias))               /* 比例环节 */
+          +(Incremental_KI_2*Bias)                           /* 积分环节 */
+          +(Incremental_KD_2*(Bias-2*Last_bias+Prev_bias));  /* 微分环节 */ 
+
+    Prev_bias=Last_bias;                                   /* 保存上上次偏差 */
+	Last_bias=Bias;	                                    /* 保存上一次偏差 */
+
+	return pwm;                                            /* 输出结果 */
 }
+
 
 /**************************************************************************
 函数功能：位置式PID控制器，巡线PID

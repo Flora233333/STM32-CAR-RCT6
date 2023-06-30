@@ -34,11 +34,13 @@ float trace_KP = 10, trace_KI = 0, trace_KD = 30;                       //摄像头
 /*************************** 角度环PID ********************************************************/
 
 //float angle_KP = 3, angle_KI = 0, angle_KD = 7;                 //叠加速度内环的角度环PID  when set_v = 100, Moto = 0
-float angle_KP = 6.4, angle_KI = 0, angle_KD = 10;                //叠加速度内环的角度环PID  when set_v = 100, Moto = Target_Velocity
-//float angle_KP = 100, angle_KI = 0, angle_KD = 80;              //纯角度环PID 
+float angle_KP = 4.5, angle_KI = 0.46, angle_KD = 12;             //叠加速度内环的角度环PID  when set_v = 100, Moto = Target_Velocity (经测试v=150时感觉也行)
+//float angle_KP = 100, angle_KI = 0, angle_KD = 80;              //纯角度环PID
+
+//float angle_KP = 6, angle_KI = 0, angle_KD = 10;                //叠加速度内环的角度环PID  when set_v = 100, Moto = Target_Velocity
 
 int Target_angle = 0;                                             //目标角度
-float Angle_Dead_Space = 0.5f;                                    //角度死区
+float Angle_Dead_Space = 6.0f;                                    //角度死区
 
 /***********************************************************************************************/                                
 
@@ -235,28 +237,32 @@ int Trace_PID(int reality,int target)
 
 
 /**************************************************************************
-函数功能：位置式PID控制器，角度环
+函数功能：位置式PID控制器，角度环，积分分离
 入口参数：实际位置，目标位置
 返回  值：电机PWM
 **************************************************************************/
 int Angle_PID(int reality,int target)
 { 	
-    static float Bias,pwm,Last_Bias,Integral_bias=0;
+    static float Bias, pwm, Last_Bias, Integral_bias = 0;
     
-    Bias=target-reality;                            /* 计算偏差 */
-    Integral_bias+=Bias;	                        /* 偏差累积 */
-    
-    if(Bias < Angle_Dead_Space && Bias > -Angle_Dead_Space)
+    Bias = target - reality;                            /* 计算偏差 */
+
+    if(Bias < 0.05 && Bias > -0.05) 
         Bias = 0;
     
-    if(Integral_bias > I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
+    if(Bias < Angle_Dead_Space && Bias > -Angle_Dead_Space) /* 积分分离 */
+        Integral_bias += Bias;	                        
+    else
+        Integral_bias = 0;
+    
+    if(Integral_bias >  I_restrict) Integral_bias =  I_restrict;   /* 积分限幅 */
     if(Integral_bias < -I_restrict) Integral_bias = -I_restrict;
     
     pwm = (angle_KP*Bias)                        /* 比例环节 */
          +(angle_KI*Integral_bias)               /* 积分环节 */
          +(angle_KD*(Bias-Last_Bias));           /* 微分环节 */
     
-    Last_Bias=Bias;                                 /* 保存上次偏差 */
+    Last_Bias = Bias;                               /* 保存上次偏差 */
     return pwm;                                     /* 输出结果 */
 }
 

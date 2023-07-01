@@ -13,16 +13,8 @@ void bsp_init(void) {
     bsp_key_init();
     Gray_Init();
     BLU_Init();
-    int ret = atk_ms901m_init(115200);
-    if (ret != 0)
-    {
-        OLED_ShowString(1, 1,"IMU err");
-        while (1)
-        {
-            delay_ms(200);
-        }
-    }  
-    
+    atk_ms901m_init(115200);
+
 //    MPU_Init();
 //    DMP_Init();
 

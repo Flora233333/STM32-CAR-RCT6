@@ -194,7 +194,7 @@ int8_t Task_Init(void) {
     err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, Task_100ms_handler);
     err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, Task_500ms_handler);
 
-    err6 = Create_Task(Get_Angle_Static_Bias, 5000, 0, True, 3, NULL, Get_Angle_Static_Bias_handler);
+    err6 = Create_Task(Get_Angle_Static_Bias, 4000, 0, True, 3, NULL, Get_Angle_Static_Bias_handler);
 
     if (err1 || err2 || err3 || err4 || err5 || err6) {
         configASSERT("_TASK_CREATE_FAILED_");

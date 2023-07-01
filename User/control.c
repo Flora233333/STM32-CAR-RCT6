@@ -30,6 +30,17 @@ float trace_KP = 10, trace_KI = 0, trace_KD = 30;                       //摄像头
 
 
 
+/***************************灰度循迹环**********************************************************/
+
+
+float gray_KP = 0, gray_KI = 0, gray_KD = 0;  
+
+
+
+/**********************************************************************************************/
+
+
+
 
 /*************************** 角度环PID ********************************************************/
 
@@ -268,3 +279,26 @@ int Angle_PID(int reality,int target)
 }
 
 
+
+/**************************************************************************
+函数功能：位置式PID控制器，灰度环
+入口参数：实际位置，目标位置
+返回  值：电机PWM
+**************************************************************************/
+int Gray_PID(int reality,int target)
+{ 	
+    static float Bias,pwm,Last_Bias,Integral_bias=0;
+    
+    Bias=target-reality;                            /* 计算偏差 */
+    Integral_bias+=Bias;	                        /* 偏差累积 */
+    
+    if(Integral_bias> I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
+    if(Integral_bias< -I_restrict) Integral_bias = -I_restrict;
+    
+    pwm = (gray_KP*Bias)                        /* 比例环节 */
+         +(gray_KI*Integral_bias)               /* 积分环节 */
+         +(gray_KD*(Bias-Last_Bias));           /* 微分环节 */
+    
+    Last_Bias=Bias;                                 /* 保存上次偏差 */
+    return pwm;                                     /* 输出结果 */
+}

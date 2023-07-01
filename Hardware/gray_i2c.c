@@ -100,19 +100,20 @@ void Gray_Init(void) {
     if(ping_response == GW_GRAY_PING_OK) {
         OLED_ShowString(1, 1, "Gray Init OK!");  
         Gray_OK = 1;  
+        delay_ms(1000);
+        OLED_Clear();
     }
     else {
-        OLED_ShowString(1, 1, "Gray Failed");
+        OLED_ShowString(1, 1, "Gray  Failed");
     }
 
-    delay_ms(1000);
-	
-    OLED_Clear();
 	/* 打开开关量数据模式 */
 	sw_i2c_write_byte(&i2c_interface, 0x4C << 1, GW_GRAY_DIGITAL_MODE);
     /* 读一次8个传感器的数据 */
     sw_i2c_read_byte(&i2c_interface, 0x4C << 1, &digital_data); // digital_data 有1~8号探头开关数据
 }
+
+char gray_str[20];
 
 void Get_GrayData(void) {
     if (Gray_OK) {
@@ -129,7 +130,116 @@ void Get_GrayData(void) {
             gray_sensor[6], //探头7
             gray_sensor[7]  //探头8
         );
+
+        sprintf(gray_str, "%d%d%d%d%d%d%d%d", 
+                          gray_sensor[7], 
+                          gray_sensor[6], 
+                          gray_sensor[5], 
+                          gray_sensor[4], 
+                          gray_sensor[3], 
+                          gray_sensor[2], 
+                          gray_sensor[1], 
+                          gray_sensor[0] 
+                );
+
+        OLED_ShowString(1, 7, gray_str);
     }
+}
+
+/* 检测特殊灰度数据 */
+void Detect_Special_GrayData(void) {
+
+    if(Gray_OK == 1) {
+
+        if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            Target_angle = -90; // 左转
+            //左转程序flag = 1;
+        }
+    }
+    //......
+
+}
+
+
+/* 检测灰度传感器偏差 */
+int8_t Detect_GraySensor_Bias(void) {
+    int8_t bias = 0;
+
+    if(Gray_OK == 1) {
+        
+        if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 0; // 无偏差
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 2; // 右小偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = -2; // 左小偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 3; // 右中偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = -3; // 左中偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 4; // 右中大偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = -4; // 左中大偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 5; // 右大偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+            bias = -5; // 左大偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 7; // 右大大偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+            bias = -7; // 左大大偏
+        }
+        else if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 8; // 完全右偏
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 0 ) {
+            bias = -8; // 完全左偏
+        }
+        else {
+            bias = 0; // 无偏差
+        }
+    }
+    
+    return bias;
 }
 
 

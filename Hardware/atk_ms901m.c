@@ -299,6 +299,8 @@ uint8_t atk_ms901m_write_reg_by_id(uint8_t id, uint8_t len, uint8_t *dat)
     return ATK_MS901M_EOK;
 }
 
+uint8_t Gyro_OK = 0;
+
 /**
  * @brief       ATK-MS901M初始化
  * @param       buadrate: ATK-MS901M UART通讯波特率
@@ -316,6 +318,8 @@ uint8_t atk_ms901m_init(uint32_t baudrate)
     ret = atk_ms901m_read_reg_by_id(ATK_MS901M_FRAME_ID_REG_GYROFSR, &g_atk_ms901m_fsr.gyro, 100);
     if (ret == 0)
     {
+        OLED_ShowString(2, 1,"IMU   Failed");
+        delay_ms(1000);
         return ATK_MS901M_ERROR;
     }
     
@@ -323,9 +327,13 @@ uint8_t atk_ms901m_init(uint32_t baudrate)
     ret = atk_ms901m_read_reg_by_id(ATK_MS901M_FRAME_ID_REG_ACCFSR, &g_atk_ms901m_fsr.accelerometer, 100);
     if (ret == 0)
     {
+        OLED_ShowString(2, 1,"IMU   Failed");
+        delay_ms(1000);
         return ATK_MS901M_ERROR;
     }
-    
+
+    Gyro_OK = 1;
+
     return ATK_MS901M_EOK;
 }
 
@@ -887,7 +895,7 @@ uint8_t atk_ms901m_set_port_pwm_period(atk_ms901m_port_t port, uint16_t period, 
     return ATK_MS901M_EOK;
 }
 
-char str[20];
+char angle_str[20];
 atk_ms901m_attitude_data_t attitude_dat;           /* 姿态角数据 */
 float ANGLE_STATIC_BIAS = 0;                       /* 角度静差 */
 float Now_Angle = 0;                               /* 当前角度 */
@@ -900,14 +908,16 @@ void Get_Angle(void)
 //    atk_ms901m_barometer_data_t barometer_dat;         /* 气压计数据 */
     
     /* 获取ATK-MS901数据 */
-    atk_ms901m_get_attitude(&attitude_dat, 100);                            /* 获取姿态角数据 */
-//    atk_ms901m_get_gyro_accelerometer(&gyro_dat, &accelerometer_dat, 100);  /* 获取陀螺仪、加速度计数据 */
-//    atk_ms901m_get_magnetometer(&magnetometer_dat, 100);                    /* 获取磁力计数据 */
-//    atk_ms901m_get_barometer(&barometer_dat, 100);                          /* 获取气压计数据 */
-    
-    Now_Angle = attitude_dat.yaw - ANGLE_STATIC_BIAS;
-    sprintf(str,"Yaw : %.03f", Now_Angle);
-    OLED_ShowString(2,1,str);
+    if(Gyro_OK == 1) {
+        atk_ms901m_get_attitude(&attitude_dat, 100);                            /* 获取姿态角数据 */
+    //    atk_ms901m_get_gyro_accelerometer(&gyro_dat, &accelerometer_dat, 100);  /* 获取陀螺仪、加速度计数据 */
+    //    atk_ms901m_get_magnetometer(&magnetometer_dat, 100);                    /* 获取磁力计数据 */
+    //    atk_ms901m_get_barometer(&barometer_dat, 100);                          /* 获取气压计数据 */
+        
+        Now_Angle = attitude_dat.yaw - ANGLE_STATIC_BIAS;
+        sprintf(angle_str,"%.03f ", Now_Angle);
+        OLED_ShowString(2,7,angle_str);
+    }
     
     //delay_ms(10);
 }

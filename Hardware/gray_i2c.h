@@ -79,6 +79,7 @@ int8_t sw_i2c_mem_write(sw_i2c_interface_t *i2c_interface, uint8_t dev_addr, uin
 
 void Gray_Init(void);
 void Get_GrayData(void);
-
+int8_t Detect_GraySensor_Bias(void);
+void Detect_Special_GrayData(void);
 
 #endif //SW_I2C_H_GUARD

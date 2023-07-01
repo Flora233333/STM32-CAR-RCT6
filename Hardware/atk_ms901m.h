@@ -67,6 +67,8 @@
 #define ATK_MS901M_FRAME_ID_TYPE_UPLOAD     0       /* ATK-MS901M主动上传帧ID */
 #define ATK_MS901M_FRAME_ID_TYPE_ACK        1       /* ATK-MS901M应答帧ID */
 
+extern uint8_t Gyro_OK;
+
 /* 姿态角数据结构体 */
 typedef struct
 {

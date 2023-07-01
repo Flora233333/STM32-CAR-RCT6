@@ -31,12 +31,15 @@ static uint8_t sw_i2c_hal_read_byte(sw_i2c_interface_t *i2c_interface, uint8_t a
 sw_i2c_interface_t i2c_interface; // 通信接口句柄
 __IO uint8_t gray_sensor[8];      // 8路灰度数据
 __IO uint8_t digital_data = 0X00;
-
+uint8_t Gray_OK = 0;
 
 void sw_i2c_init()
 {
 	RCC_APB2PeriphClockCmd(SW_RCC, ENABLE);
-	
+
+	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    //GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
+
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 	GPIO_InitStructure.GPIO_Pin = SW_I2C1_PIN_SCL | SW_I2C1_PIN_SDA;
@@ -49,7 +52,7 @@ void sw_i2c_init()
 /* 定义sda输出函数 bit=0为低电平 bit=1为高电平 */
 void sda_out(uint8_t bit, void *user_data)
 {
-	GPIO_WriteBit(GPIOB, SW_I2C1_PIN_SDA, (BitAction)bit);
+	GPIO_WriteBit(SW_GPIOX, SW_I2C1_PIN_SDA, (BitAction)bit);
 	
 	/* IIC软件延迟 */
 	delay_us(10);
@@ -59,7 +62,7 @@ void sda_out(uint8_t bit, void *user_data)
 uint8_t sda_in(void *user_data)
 {
 	uint8_t bit;
-	bit = (uint8_t)GPIO_ReadInputDataBit(GPIOB, SW_I2C1_PIN_SDA);
+	bit = (uint8_t)GPIO_ReadInputDataBit(SW_GPIOX, SW_I2C1_PIN_SDA);
 	
 	/* IIC软件延迟 */
 	delay_us(10);
@@ -69,7 +72,7 @@ uint8_t sda_in(void *user_data)
 /* 定义scl时钟输出函数 bit=0为低电平 bit=1为高电平 */
 void scl_out(uint8_t bit, void *user_data)
 {
-	GPIO_WriteBit(GPIOB, SW_I2C1_PIN_SCL, (BitAction)bit);
+	GPIO_WriteBit(SW_GPIOX, SW_I2C1_PIN_SCL, (BitAction)bit);
 	
 	/* IIC软件延迟 */
 	delay_us(10);
@@ -94,13 +97,17 @@ void Gray_Init(void) {
 	sw_i2c_mem_read(&i2c_interface, 0x4C << 1, GW_GRAY_PING, &ping_response, 1);
     
     /* 地址验证 */
-    if(ping_response == 0x66)
-        OLED_ShowString(1, 1, "Gray Sensor Init OK!");    
-    else 
-        OLED_ShowString(1, 1, "Gray Sensor Failed");
+    if(ping_response == GW_GRAY_PING_OK) {
+        OLED_ShowString(1, 1, "Gray Init OK!");  
+        Gray_OK = 1;  
+    }
+    else {
+        OLED_ShowString(1, 1, "Gray Failed");
+    }
 
     delay_ms(1000);
 	
+    OLED_Clear();
 	/* 打开开关量数据模式 */
 	sw_i2c_write_byte(&i2c_interface, 0x4C << 1, GW_GRAY_DIGITAL_MODE);
     /* 读一次8个传感器的数据 */
@@ -108,19 +115,21 @@ void Gray_Init(void) {
 }
 
 void Get_GrayData(void) {
-    /* 读取开关量数据 */
-	sw_i2c_read_byte(&i2c_interface, 0x4C << 1, &digital_data); // digital_data 有1~8号探头开关数据
+    if (Gray_OK) {
+        /* 读取开关量数据 */
+	    sw_i2c_read_byte(&i2c_interface, 0x4C << 1, &digital_data); // digital_data 有1~8号探头开关数据
 
-    SEP_ALL_BIT8(digital_data, 
-        gray_sensor[0], //探头1
-        gray_sensor[1], //探头2
-        gray_sensor[2], //探头3
-        gray_sensor[3], //探头4
-        gray_sensor[4], //探头5
-        gray_sensor[5], //探头6
-        gray_sensor[6], //探头7
-        gray_sensor[7]  //探头8
-    );
+        SEP_ALL_BIT8(digital_data, 
+            gray_sensor[0], //探头1
+            gray_sensor[1], //探头2
+            gray_sensor[2], //探头3
+            gray_sensor[3], //探头4
+            gray_sensor[4], //探头5
+            gray_sensor[5], //探头6
+            gray_sensor[6], //探头7
+            gray_sensor[7]  //探头8
+        );
+    }
 }
 
 

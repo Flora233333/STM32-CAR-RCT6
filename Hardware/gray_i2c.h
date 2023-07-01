@@ -24,8 +24,8 @@ typedef struct {
  */
 #define     SW_RCC                  RCC_APB2Periph_GPIOC
 #define     SW_GPIOX                GPIOC
-#define     SW_I2C1_PIN_SCL         GPIO_Pin_6
-#define     SW_I2C1_PIN_SDA         GPIO_Pin_7
+#define     SW_I2C1_PIN_SCL         GPIO_Pin_7
+#define     SW_I2C1_PIN_SDA         GPIO_Pin_8
 
 
 extern sw_i2c_interface_t i2c_interface; // 通信接口句柄

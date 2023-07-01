@@ -23,10 +23,26 @@ int main() {
     //int flag = 0;
     //printf("1");
     //uint8_t num = 0;
-    
+    char gray[20] = {0};
+
 	while(1) {
         Task_Run();
         Get_Angle();
+        Get_GrayData();
+
+        sprintf(gray, "%d%d%d%d%d%d%d%d", 
+                          gray_sensor[0], 
+                          gray_sensor[1], 
+                          gray_sensor[2], 
+                          gray_sensor[3], 
+                          gray_sensor[4], 
+                          gray_sensor[5], 
+                          gray_sensor[6], 
+                          gray_sensor[7] 
+                );
+
+        OLED_ShowString(1, 1, gray);
+
         //printf("d:%.2f, %d\n",Now_Angle, Target_angle);
         //Test_Encoder();
         //OLED_ShowNum(1,1,rxdata[0],3);

@@ -151,11 +151,34 @@ void Detect_Special_GrayData(void) {
 
     if(Gray_OK == 1) {
 
-        if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
-            gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
-            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            Target_angle = -90; // 左转
-            //左转程序flag = 1;
+        // if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //     gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //     Target_angle = -90; // 左转
+        //     //左转程序flag = 1;
+        // }
+        if( gray_sensor[1] == 0 && gray_sensor[2] == 0 && gray_sensor[5] == 1 ) { // 到达了一次交叉路口
+            // passby_cross_num ++
+        }
+
+        if( gray_sensor[2] == 0 && gray_sensor[3] == 0 && 
+            gray_sensor[4] == 0 && gray_sensor[5] == 0 ) {
+            // if(user_key_num == 1) {
+            //     stop_flag = 1;
+            // } 
+            // else if(user_key_num == 2) {
+            //     pass_line_num ++;
+            // }
+            // else if(user_key_num == 3) {
+            //     pass_line_num ++;
+            // }
+            // else if(user_key_num == 4) {
+            //     pass_line_num ++;
+            //     delay_flag = 1;
+            //     until_time = Get_nowtime() + 5000;
+            //     stop_flag = 1;
+            // }
+            
         }
     }
     //......

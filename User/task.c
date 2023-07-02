@@ -16,7 +16,7 @@ Task_handle * Task_100ms_handler = NULL;
 Task_handle * Task_500ms_handler = NULL;
 
 Task_handle * Get_Angle_Static_Bias_handler = NULL;
-
+Task_handle * Detect_Special_GrayData_handler = NULL;
 /*****************************************************************************/
 
 
@@ -186,17 +186,18 @@ void Get_Angle_Static_Bias(void) {
 
 
 int8_t Task_Init(void) {
-    uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0, err6 = 0;
+    uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0, err6 = 0, err7 = 0;
     
-    err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, Task_1ms_handler);
+    // err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, Task_1ms_handler);
     err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, Task_5ms_handler);
     err3 = Create_Task(Task_10ms, 10, 0, True, 0, NULL, Task_10ms_handler);
-    err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, Task_100ms_handler);
+    // err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, Task_100ms_handler);
     err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, Task_500ms_handler);
 
     err6 = Create_Task(Get_Angle_Static_Bias, 4000, 0, True, 3, NULL, Get_Angle_Static_Bias_handler);
+    err7 = Create_Task(Detect_Special_GrayData, 5, 0, False, 0, NULL, Detect_Special_GrayData_handler);
 
-    if (err1 || err2 || err3 || err4 || err5 || err6) {
+    if (err1 || err2 || err3 || err4 || err5 || err6 || err7) {
         configASSERT("_TASK_CREATE_FAILED_");
         return _TASK_CREATE_FAILED_;
     }

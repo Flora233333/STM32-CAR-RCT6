@@ -74,7 +74,7 @@
 #define             KEY_UP_K5	            KEY_5_UP
 #define             KEY_LONG_K5             KEY_5_LONG
 
-                        
+extern uint8_t user_key_num;                     
                         
 
 

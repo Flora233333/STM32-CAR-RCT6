@@ -32,6 +32,7 @@ void info_print(void) {
 
 int test_angle[2] = {90, -90};
 int i = 0;
+uint8_t user_key_num = 0;
 
 void Key_map(uint16_t KeyCode) {
     if (KeyCode != KEY_NONE)

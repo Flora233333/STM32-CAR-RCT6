@@ -58,7 +58,7 @@ float Angle_Dead_Space = 6.0f;                                    //角度死区
 
 uint8_t start_flag = 0;
 
-int task1_time = 0, task2_time = 0;
+uint64_t wait_time = 0;
 
 // 10ms定时器更新中断回调函数
 void TIM1_UP_IRQHandler() {
@@ -67,11 +67,13 @@ void TIM1_UP_IRQHandler() {
     
 	if(TIM_GetITStatus(TIM1, TIM_IT_Update) == SET) {
         
+        wait_time = Get_nowtime();
+
         if(start_flag == 1) {
             //int capture_bias = 0;
             int angle_bias = 0;
             
-            task1_time = global_time;
+            
 
             Reality_Velocity_1 = Read_Encoder(3);                       /* 获取实际脉冲数 */         
             Reality_Position_1 += Reality_Velocity_1;                   /* 实际位置脉冲数 */

@@ -2,6 +2,7 @@
 
 __IO uint8_t BLU_rxdata[4];
 
+
 void BLU_Uart3_Init(void) {
     
     GPIO_InitTypeDef GPIO_InitStructure;                         
@@ -76,6 +77,23 @@ void USART3_IRQHandler(void)
         }
         
 	}
+}
+
+
+void BLU_SendDataPack(u8 * Data, u16 SIZE) {
+	u16 i = 0;
+
+    USART_SendData(USART3, 0xFF);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
+
+	for(i = 0; i < SIZE; i++)
+	{
+		USART_SendData(USART3,Data[i]);
+		while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
+	}
+
+    USART_SendData(USART3, 0xFE);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
 }
 
 

@@ -6,16 +6,17 @@
 
 float Position_KP=0.295,Position_KI=0,Position_KD=0.68;                 //位置环PID
 
-float Incremental_KP_1=82,Incremental_KI_1=6,Incremental_KD_1=2;        //left  速度环PID
-float Incremental_KP_2=60,Incremental_KI_2=8,Incremental_KD_2=2;        //right 速度环PID
-
+//float Incremental_KP_1=82,Incremental_KI_1=6,Incremental_KD_1=2;        //left  速度环PID
+//float Incremental_KP_2=60,Incremental_KI_2=8,Incremental_KD_2=2;        //right 速度环PID
+float Incremental_KP_1=150,Incremental_KI_1=15,Incremental_KD_1=52;        //left  速度环PID
+float Incremental_KP_2=150,Incremental_KI_2=15,Incremental_KD_2=47;        //right 速度环PID
 /* left */
-int Target_Velocity_1 = 0, Reality_Velocity_1 = 0;   /* 目标速度，实际速度 */
-int Target_Position_1 = 0, Reality_Position_1 = 0;   /* 目标位置，实际位置 */
+__IO int Target_Velocity_1 = 0, Reality_Velocity_1 = 0;   /* 目标速度，实际速度 */
+__IO int Target_Position_1 = 0, Reality_Position_1 = 0;   /* 目标位置，实际位置 */
 
 /* right */
-int Target_Velocity_2 = 0, Reality_Velocity_2 = 0;   /* 目标速度，实际速度 */
-int Target_Position_2 = 0, Reality_Position_2 = 0;   /* 目标位置，实际位置 */
+__IO int Target_Velocity_2 = 0, Reality_Velocity_2 = 0;   /* 目标速度，实际速度 */
+__IO int Target_Position_2 = 0, Reality_Position_2 = 0;   /* 目标位置，实际位置 */
 
 /**********************************************************************************************/
 
@@ -71,7 +72,7 @@ void TIM1_UP_IRQHandler() {
 
         if(start_flag == 1) {
             //int capture_bias = 0;
-            int angle_bias = 0;
+            //int angle_bias = 0;
             
             
 
@@ -80,8 +81,6 @@ void TIM1_UP_IRQHandler() {
             
             Reality_Velocity_2 = -Read_Encoder(4);                       /* 获取实际脉冲数 */         
             Reality_Position_2 += Reality_Velocity_2;                   /* 实际位置脉冲数 */
-
-            //printf("d:%d, %d, %d\n",Reality_Velocity_1, Reality_Velocity_2, Target_Velocity_1);
             
             Moto1 = Target_Velocity_1; 
             
@@ -98,10 +97,10 @@ void TIM1_UP_IRQHandler() {
 
             /* 角度环 */
             {
-                angle_bias = Angle_PID(Now_Angle, Target_angle);
+                //angle_bias = Angle_PID(Now_Angle, Target_angle);
 
-                Moto1 -= angle_bias;
-                Moto2 += angle_bias;
+                //Moto1 -= angle_bias;
+                //Moto2 += angle_bias;
             }
 
             /* 位置环 */
@@ -109,7 +108,9 @@ void TIM1_UP_IRQHandler() {
                 //Moto1 = Position_PID_left(Reality_Position_1,Target_Position_1);  
                 //Moto2 = Position_PID_right(Reality_Position_2,Target_Position_2);  
             }
-            
+            //Moto1 = forwardfeedback(Reality_Velocity_1);
+            //Moto2 = forwardfeedback(Reality_Velocity_2);
+
             Moto1 = PWM_restrict(Moto1,Target_Velocity_1);                    /* 位置环输出限幅 */
             Moto2 = PWM_restrict(Moto2,Target_Velocity_2);                    /* 位置环输出限幅 */
             
@@ -118,7 +119,7 @@ void TIM1_UP_IRQHandler() {
                 //Moto1 = Incremental_PID_left(Moto1, Target_Velocity_1);             
                 Moto1 = Incremental_PID_left(Reality_Velocity_1, Moto1);
 
-                
+                //Moto1 += forwardfeedback(Reality_Velocity_1) * -1;
                 PWM_updata_Motor1(Moto1);                                               
             }
             
@@ -127,7 +128,7 @@ void TIM1_UP_IRQHandler() {
                 //Moto2 = Incremental_PID_right(Moto2, Target_Velocity_2);      
                 Moto2 = Incremental_PID_right(Reality_Velocity_2, Moto2);
 
-                
+                //Moto2 += forwardfeedback(Reality_Velocity_2);
                 PWM_updata_Motor2(Moto2);                                   
             }
 
@@ -138,7 +139,7 @@ void TIM1_UP_IRQHandler() {
 
 
 int forwardfeedback(float in) {
-    static float last_in = 0, Ta = 0.3, Tb = 0.3;
+    static float last_in = 0, Ta = 0.3, Tb = 0.1;
     float out = 0;
     out = Ta * (in - last_in) / 0.01 + Tb * in; // 对时间求导，0.01为采样时间 PD前馈(Ta*s + Tb)
     // 这里是因为我Ta, Tb都是1(因为不知道怎么调)，所以直接相加了

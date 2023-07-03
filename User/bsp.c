@@ -13,7 +13,7 @@ void bsp_init(void) {
     bsp_key_init();
     Gray_Init();
     BLU_Init();
-    atk_ms901m_init(115200);
+    //atk_ms901m_init(115200);
 
 //    MPU_Init();
 //    DMP_Init();
@@ -59,7 +59,11 @@ void Key_map(uint16_t KeyCode) {
 
             case KEY_UP_K2:				/* K2键弹起 */
                 //printf("K2键弹起\r\n");
+                TIM3 -> CNT = 0; //防上次运行累计
+                TIM4 -> CNT = 0;
                 start_flag = 1;
+                Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10);
+                Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10);
                 break;
 
             case KEY_LONG_K2:	        /* K2键长按 */
@@ -73,11 +77,11 @@ void Key_map(uint16_t KeyCode) {
             case KEY_UP_K3:				/* K3键弹起 */
                 //printf("K3键弹起\r\n");
                 
-                Target_angle = test_angle[i++];
-                if(i == 2)
-                    i = 0;
-            //Target_Velocity_1 = Rpm_Encoder_Cnt(300,13,30,10); 
-            //Target_Velocity_2 = Rpm_Encoder_Cnt(300,13,30,10); 
+                // Target_angle = test_angle[i++];
+                // if(i == 2)
+                //     i = 0;
+                Target_Velocity_1 = Rpm_Encoder_Cnt(200,13,30,10); 
+                Target_Velocity_2 = Rpm_Encoder_Cnt(200,13,30,10); 
                 break;
 
             case KEY_LONG_K3:	        /* K3键长按 */

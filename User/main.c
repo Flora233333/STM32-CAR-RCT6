@@ -9,11 +9,11 @@ int main() {
     OLED_ShowString(1, 1, "Gray: ");
     OLED_ShowString(2, 1, "Yaw : ");
 
-    Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
+    //Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_1 = Num_Encoder_Cnt(10,13,30);      
     
-    Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
+    //Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_2 = Num_Encoder_Cnt(10,13,30); 
     
@@ -28,11 +28,12 @@ int main() {
 
 	while(1) {
         Task_Run();
-        Get_Angle();
+        //Get_Angle();
         Get_GrayData();
 
-
+        printf("d:%d, %d, %d\n",Reality_Velocity_1, Reality_Velocity_2, Target_Velocity_1);
         //printf("d:%.2f, %d\n",Now_Angle, Target_angle);
+        
         //Test_Encoder();
         //OLED_ShowNum(1,1,rxdata[0],3);
         

@@ -42,8 +42,15 @@ int PWM_restrict(int Motor, int max) {
 	//if(*Motor_1 < 100) *Motor_1 = 100;
 	//if(*Motor_2 < 100) *Motor_2 = 100;
     
-    if(Motor > max) Motor = max;
-    if(Motor < -max) Motor = -max;
+    if(max >= 0) {
+        if(Motor > max) Motor = max;
+        if(Motor < -max) Motor = -max;
+    }
+    
+    if(max < 0) {
+        if(Motor < max) Motor = max;
+        if(Motor > -max) Motor = -max;
+    }
 
     return Motor;
 }
@@ -57,6 +64,7 @@ void PWM_stop(void) {
 
 //char str3[100];
 void PWM_updata_Motor1(int Motor_1) {
+    //printf("%d\r\n",Motor_1);
      
     if(Motor_1 > 0) {
 		Motor1_SetDirct(1, 0);

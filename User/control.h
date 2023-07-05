@@ -12,7 +12,10 @@ extern __IO int Target_Position_2, Reality_Position_2;   /* 目标位置，实际位置 *
 
 extern int Target_angle;
 extern uint8_t start_flag;
+extern uint8_t stop_flag;
+extern float trace_KP, trace_KI, trace_KD;
 
+void Mode_Select(void);
 int forwardfeedback(float in);
 int Position_PID_left(int reality,int target);
 int Position_PID_right(int reality,int target);
@@ -20,5 +23,7 @@ int Incremental_PID_left(int reality,int target);
 int Incremental_PID_right(int reality,int target);  
 int Trace_PID(int reality,int target);
 int Angle_PID(int reality,int target);
+int Gray_PID(int reality,int target);
+int Distant_PID(int reality,int target);
 
 #endif

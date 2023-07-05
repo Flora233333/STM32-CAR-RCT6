@@ -15,7 +15,7 @@
 
 #define                 HARD_KEY_NUM                    5	                                        /* 实际硬件按键的个数 */
 #define                 KEY_COUNT                       (sizeof(s_gpio_list) / sizeof(X_GPIO_T))	/* 配置按键的个数(包括组合按键) */
-#define                 KEY_FILTER_TIME                 5
+#define                 KEY_FILTER_TIME                 3
 #define                 KEY_LONG_TIME                   60			                                /* 单位10ms， 持续1秒，认为长按事件 */
 
 

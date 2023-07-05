@@ -5,7 +5,7 @@
 
 #define     BEEP_GPIOx                       GPIOA
 #define     BEEP_RCC_APB2Periph_GPIOx        RCC_APB2Periph_GPIOA
-#define     BEEP_PIN                         GPIO_Pin_0
+#define     BEEP_PIN                         GPIO_Pin_12
 
 
 void BEEP_Init(void);

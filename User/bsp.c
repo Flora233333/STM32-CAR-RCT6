@@ -13,6 +13,10 @@ void bsp_init(void) {
     bsp_key_init();
     Gray_Init();
     BLU_Init();
+    UART4_Init();
+    
+    BEEP_Init();
+    BEEP_toggle();
     //atk_ms901m_init(115200);
 
 //    MPU_Init();
@@ -59,11 +63,8 @@ void Key_map(uint16_t KeyCode) {
 
             case KEY_UP_K2:				/* K2键弹起 */
                 //printf("K2键弹起\r\n");
-                TIM3 -> CNT = 0; //防上次运行累计
-                TIM4 -> CNT = 0;
-                start_flag = 1;
-                Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10);
-                Target_Velocity_2 = Rpm_Encoder_Cnt(100,13,30,10);
+                user_key_num = 1;
+                Mode_Select();
                 break;
 
             case KEY_LONG_K2:	        /* K2键长按 */
@@ -80,8 +81,8 @@ void Key_map(uint16_t KeyCode) {
                 // Target_angle = test_angle[i++];
                 // if(i == 2)
                 //     i = 0;
-                Target_Velocity_1 = Rpm_Encoder_Cnt(200,13,30,10); 
-                Target_Velocity_2 = Rpm_Encoder_Cnt(200,13,30,10); 
+                user_key_num = 2;
+                Mode_Select();
                 break;
 
             case KEY_LONG_K3:	        /* K3键长按 */
@@ -89,23 +90,26 @@ void Key_map(uint16_t KeyCode) {
                 break;
             
              case KEY_DOWN_K4:			
-                printf("K4键按下\r\n");
+                //printf("K4键按下\r\n");
                 break;
 
             case KEY_UP_K4:				
-                printf("K4键弹起\r\n");
+
+                //trace_KP = 0.25;trace_KI = 0;trace_KD = 0.6;
+                user_key_num = 3;
+                Mode_Select();
                 break;
 
-            case KEY_LONG_K4:	        
-                printf("K4键长按\r\n");
+            case KEY_LONG_K4:
                 break;
 
             case KEY_DOWN_K5:			
-                printf("K5键按下\r\n");
+                //printf("K5键按下\r\n");
                 break;
 
             case KEY_UP_K5:				
-                printf("K5键弹起\r\n");
+                user_key_num = 4;
+                Mode_Select();
                 break;
 
             case KEY_LONG_K5:	        

@@ -7,8 +7,9 @@ int main() {
     bsp_init();
 
     OLED_ShowString(1, 1, "Gray: ");
-    OLED_ShowString(2, 1, "Yaw : ");
-
+    OLED_ShowString(2, 1, "dis : ");
+    OLED_ShowString(3, 1, "Stop: ");
+    OLED_ShowString(4, 1, "Cap : ");
     //Target_Velocity_1 = Rpm_Encoder_Cnt(100,13,30,10); 
     
     //Target_Position_1 = Num_Encoder_Cnt(10,13,30);      
@@ -24,15 +25,20 @@ int main() {
     //int flag = 0;
     //printf("1");
     //uint8_t num = 0;
-    
-
+    //__IO uint8_t a;
+    //sw_i2c_write_byte(&i2c_interface, 0x4C << 1, 0xB4);
 	while(1) {
         Task_Run();
-        //Get_Angle();
+        Get_Angle();
         Get_GrayData();
-
-        printf("d:%d, %d, %d\n",Reality_Velocity_1, Reality_Velocity_2, Target_Velocity_1);
+        OLED_ShowNum(2, 7, distant, 4);
+        OLED_ShowNum(3, 7, stop_flag, 2);
+        OLED_ShowNum(4, 7, capture_data[0], 3);
+        //sw_i2c_write_byte(&i2c_interface, 0x4C << 1, 0xB4);
+        //sw_i2c_read_byte(&i2c_interface, 0x4C << 1, &a);
+        //printf("d:%d, %d, %d\n",Reality_Velocity_1, Reality_Velocity_2, Target_Velocity_1);
         //printf("d:%.2f, %d\n",Now_Angle, Target_angle);
+        //printf("%d\r\n",a);
         
         //Test_Encoder();
         //OLED_ShowNum(1,1,rxdata[0],3);

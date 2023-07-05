@@ -25,7 +25,9 @@ __IO int Target_Position_2 = 0, Reality_Position_2 = 0;   /* 目标位置，实际位置 
 
 /*************************** 摄像头轨迹环PID **************************************************/
 
-float trace_KP = 10, trace_KI = 0, trace_KD = 30;                       //摄像头巡线环PID
+//float trace_KP = 6, trace_KI = 0, trace_KD = 30;  //pwm=1500                     //摄像头巡线环PID
+//float trace_KP = 0.25, trace_KI = 0, trace_KD = 0.6; //转速=100
+float trace_KP = 0.45, trace_KI = 0, trace_KD = 0.8; //转速=250
 
 /**********************************************************************************************/
 
@@ -34,9 +36,9 @@ float trace_KP = 10, trace_KI = 0, trace_KD = 30;                       //摄像头
 /***************************灰度循迹环**********************************************************/
 
 
-float gray_KP = 0, gray_KI = 0, gray_KD = 0;  
-
-
+//float gray_KP = 5.2, gray_KI = 0, gray_KD = 10;  //转速=100
+//float gray_KP = 125, gray_KI = 1, gray_KD = 240; //pwm = 2000
+float gray_KP = 145, gray_KI = 0, gray_KD = 360; // pwm = 1500
 
 /**********************************************************************************************/
 
@@ -54,12 +56,32 @@ float angle_KP = 4.5, angle_KI = 0.46, angle_KD = 12;             //叠加速度内环
 int Target_angle = 0;                                             //目标角度
 float Angle_Dead_Space = 6.0f;                                    //角度死区
 
-/***********************************************************************************************/                                
+/***********************************************************************************************/  
 
 
+
+
+/*************************** 距离环PID ********************************************************/
+
+float distant_KP = 0.5, distant_KI = 0, distant_KD = 0;          //距离环PID
+
+/***********************************************************************************************/ 
+
+
+
+/* 临时任务标志 */
 uint8_t start_flag = 0;
 
-uint64_t wait_time = 0;
+int64_t wait_time = 0;
+
+uint8_t stop_flag = 0;
+uint8_t first_stop_flag = 0;
+//uint8_t stop_time = 0;
+uint8_t task_4 = 0;
+int64_t task_nowtime = 0;
+
+
+
 
 // 10ms定时器更新中断回调函数
 void TIM1_UP_IRQHandler() {
@@ -70,10 +92,30 @@ void TIM1_UP_IRQHandler() {
         
         wait_time = Get_nowtime();
 
+        if (user_key_num == 1 && stop_flag >= 3) {
+            Target_Velocity_1 = 0;
+            Target_Velocity_2 = 0;
+        }
+
+        if (task_4 == 0 && user_key_num == 4 && stop_flag == 2) {
+            Target_Velocity_1 = 0;
+            Target_Velocity_2 = 0;
+            task_4 = 1;
+            task_nowtime = Get_nowtime();
+            Detect_Special_GrayData_handler.last_run = task_nowtime + 4600;
+        }
+
+        if (task_4 == 1 && task_nowtime + 5000 <= wait_time) {
+            Target_Velocity_1 = Rpm_Encoder_Cnt(150,13,30,10); 
+            Target_Velocity_2 = Rpm_Encoder_Cnt(150,13,30,10);
+            if(stop_flag >= 3) {
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+            }
+        }
+        
+
         if(start_flag == 1) {
-            //int capture_bias = 0;
-            //int angle_bias = 0;
-            
             
 
             Reality_Velocity_1 = Read_Encoder(3);                       /* 获取实际脉冲数 */         
@@ -85,22 +127,33 @@ void TIM1_UP_IRQHandler() {
             Moto1 = Target_Velocity_1; 
             
             Moto2 = Target_Velocity_2; 
+            //printf("%d\r\n",Moto1);
 
+            /* 灰度环 */
+            {
+                // int gray_bias = Gray_PID(Detect_GraySensor_Bias(), 0);
+
+                // Moto1 += gray_bias;
+                // Moto2 -= gray_bias;
+            }
 
             /* 摄像头轨迹环 */
             {
-                //capture_bias = Trace_PID(rxarr[0], middle_loc);
+                //if(first_stop_flag == 0) {
+                // int capture_bias = Trace_PID(capture_data[0], middle_loc);
 
-                //Moto1 -= angle_bias;
-                //Moto2 += angle_bias;
+                // Moto1 -= capture_bias;
+                // Moto2 += capture_bias;
+                //}
+
             }
 
             /* 角度环 */
             {
-                //angle_bias = Angle_PID(Now_Angle, Target_angle);
+                // int angle_bias = Angle_PID(Now_Angle, Target_angle);
 
-                //Moto1 -= angle_bias;
-                //Moto2 += angle_bias;
+                // Moto1 -= angle_bias;
+                // Moto2 += angle_bias;
             }
 
             /* 位置环 */
@@ -108,12 +161,22 @@ void TIM1_UP_IRQHandler() {
                 //Moto1 = Position_PID_left(Reality_Position_1,Target_Position_1);  
                 //Moto2 = Position_PID_right(Reality_Position_2,Target_Position_2);  
             }
+
+            /* 距离环 */
+            {
+                //int distant_bias = Distant_PID(distant, 200);
+
+                //Moto1 += distant_bias;
+                //Moto2 += distant_bias;
+
+            }
+
             //Moto1 = forwardfeedback(Reality_Velocity_1);
             //Moto2 = forwardfeedback(Reality_Velocity_2);
 
             Moto1 = PWM_restrict(Moto1,Target_Velocity_1);                    /* 位置环输出限幅 */
             Moto2 = PWM_restrict(Moto2,Target_Velocity_2);                    /* 位置环输出限幅 */
-            
+            //printf("%d\r\n",Moto1);
             /* Motor1速度环 */
             {
                 //Moto1 = Incremental_PID_left(Moto1, Target_Velocity_1);             
@@ -135,6 +198,72 @@ void TIM1_UP_IRQHandler() {
         }
         TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	}
+}
+
+void Mode_Select(void) {
+    uint8_t send_data[3] = {1, 0, 0};
+    // PID参数都有默认值。没在任务选择里写，就代表用默认值。
+    switch (user_key_num)
+    {
+    case 1:
+        TIM3 -> CNT = 0; //防上次运行累计
+        TIM4 -> CNT = 0;
+
+        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
+        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
+
+        trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+
+        start_flag = 1;
+        break;
+
+    case 2:
+        TIM3 -> CNT = 0; //防上次运行累计
+        TIM4 -> CNT = 0;
+
+        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
+        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
+
+        trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+
+        start_flag = 1;
+        break;
+
+    case 3:
+        TIM3 -> CNT = 0; //防上次运行累计
+        TIM4 -> CNT = 0;
+
+        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.7, 6.5), 13, 30, 10);
+        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.7, 6.5), 13, 30, 10);
+
+        Incremental_KP_1=260; Incremental_KI_1=9.5; Incremental_KD_1=0;        //left  速度环PID
+        Incremental_KP_2=260; Incremental_KI_2=9.5; Incremental_KD_2=0;        //right 速度环PID
+
+        start_flag = 1;
+        break;
+
+    case 4:
+        TIM3 -> CNT = 0; //防上次运行累计
+        TIM4 -> CNT = 0;
+
+        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(1, 6.5), 13, 30, 10);
+        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(1, 6.5), 13, 30, 10);
+
+        Incremental_KP_1=230; Incremental_KI_1=7; Incremental_KD_1=0;        //left  速度环PID
+        Incremental_KP_2=230; Incremental_KI_2=7; Incremental_KD_2=0;        //right 速度环PID
+
+        start_flag = 1;
+        break;
+    }
+
+    BLU_SendDataPack(send_data, 1);
+}
+
+// 只是管理题目的任务，不是调度任务
+void Task_Update(void) {
+    if(user_key_num == 1) {
+
+    }
 }
 
 
@@ -293,7 +422,11 @@ int Gray_PID(int reality,int target)
     static float Bias,pwm,Last_Bias,Integral_bias=0;
     
     Bias=target-reality;                            /* 计算偏差 */
-    Integral_bias+=Bias;	                        /* 偏差累积 */
+    
+    if(abs(Bias) > 5)
+        Integral_bias += Bias;	                        /* 偏差累积 */
+    else
+        Integral_bias = 0;
     
     if(Integral_bias> I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
     if(Integral_bias< -I_restrict) Integral_bias = -I_restrict;
@@ -305,3 +438,32 @@ int Gray_PID(int reality,int target)
     Last_Bias=Bias;                                 /* 保存上次偏差 */
     return pwm;                                     /* 输出结果 */
 }
+
+/**************************************************************************
+函数功能：位置式PID控制器，距离环
+入口参数：实际位置，目标位置
+返回  值：电机PWM
+**************************************************************************/
+int Distant_PID(int reality,int target)
+{ 	
+    static float Bias,pwm,Last_Bias,Integral_bias=0;
+
+    if(reality > 1500 || reality < 50) {
+        return 0;
+    }
+    
+    Bias=target-reality;                            /* 计算偏差 */
+    Integral_bias+=Bias;	                        /* 偏差累积 */
+    
+    if(Integral_bias > I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
+    if(Integral_bias < -I_restrict) Integral_bias = -I_restrict;
+    
+    pwm = (distant_KP*Bias)                        /* 比例环节 */
+         +(distant_KI*Integral_bias)               /* 积分环节 */
+         +(distant_KD*(Bias-Last_Bias));           /* 微分环节 */
+    
+    Last_Bias=Bias;                                 /* 保存上次偏差 */
+
+    return pwm;                                     /* 输出结果 */
+}
+

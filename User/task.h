@@ -26,7 +26,7 @@
 #define         _UNKNOWN_TASK_MODE_                     -6
 
 
-extern __IO unsigned long long global_time;
+extern __IO int64_t global_time;
 
 
 // 事件机制
@@ -38,7 +38,7 @@ typedef struct {
 
 typedef struct {
 	void(*task_func)(void);
-	uint64_t last_run; // 可以表示为start_time, 或者上一次执行完成时间
+	int64_t last_run; // 可以表示为start_time, 或者上一次执行完成时间
     uint16_t cycle; //mode=0 周期时间, mode=1 单次任务执行时间
     uint8_t is_live; //是否存活
     uint8_t mode; //mode=0 周期模式, mode=1 单次持续任务模式, mode=2 事务模式, mode=3 单次任务模式(到时间点只执行一次)
@@ -48,18 +48,19 @@ typedef struct {
 
 /***********************************任务句柄***********************************/
 
-extern Task_handle * Task_1ms_handler;
-extern Task_handle * Task_5ms_handler;
-extern Task_handle * Task_10ms_handler;
-extern Task_handle * Task_100ms_handler;
-extern Task_handle * Task_500ms_handler;
+extern Task_handle Task_1ms_handler;
+extern Task_handle Task_5ms_handler;
+extern Task_handle Task_10ms_handler;
+extern Task_handle Task_100ms_handler;
+extern Task_handle Task_500ms_handler;
 
-extern Task_handle * Get_Angle_Static_Bias_handler;
-extern Task_handle * Detect_Special_GrayData_handler;
+extern Task_handle Get_Angle_Static_Bias_handler;
+extern Task_handle Detect_Special_GrayData_handler;
+extern Task_handle Beep_ON_handler;
 /*****************************************************************************/
 
 
-uint64_t Get_nowtime(void);
+int64_t Get_nowtime(void);
 
 int8_t Task_Init(void);
 int8_t Task_Run(void);

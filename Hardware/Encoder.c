@@ -111,6 +111,15 @@ long Rpm_Encoder_Cnt(float rpm,uint16_t ppr,uint16_t ratio,uint16_t cnt_time)
     return (rpm*ratio*ppr*4)/(60*1000/cnt_time);            /* 4倍频 */       
 }
 
+/**************************************************************************
+功    能: 计算速度对应转速 rpm单位: min/圈
+输    入: speed 速度 m/s；perimeter：轮子周长 cm
+返 回 值: 电机转速rpm  min/圈   
+**************************************************************************/
+int Cal_Speed2Rpm(float speed, float perimeter) { 
+    return (int)(speed * 100 * 60 / (perimeter * 3.1415) + 0.5);  //四舍五入
+}
+
 
 void TIM3_IRQHandler(void)
 {

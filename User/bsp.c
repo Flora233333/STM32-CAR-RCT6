@@ -15,13 +15,14 @@ void bsp_init(void) {
     BLU_Init();
     UART4_Init();
     
-    BEEP_Init();
-    BEEP_toggle();
     //atk_ms901m_init(115200);
 
-//    MPU_Init();
-//    DMP_Init();
-
+    //MPU_Init();
+    //DMP_Init();
+    
+    BEEP_Init();
+    BEEP_toggle();
+    
     Task_Init();
 }
 
@@ -42,84 +43,85 @@ void Key_map(uint16_t KeyCode) {
     if (KeyCode != KEY_NONE)
     {
         //printf("ucKeyCode = %d\r\n", ucKeyCode);
-        switch (KeyCode)
-        {
-            case KEY_DOWN_K1:			/* K1键按下 */
-                //start_flag = 1;
-                printf("K1键按下\r\n");
-                break;
+        if(start_flag == 0)
+            switch (KeyCode)
+            {
+                case KEY_DOWN_K1:			/* K1键按下 */
+                    //start_flag = 1;
+                    printf("K1键按下\r\n");
+                    break;
 
-            case KEY_UP_K1:				/* K1键弹起 */
-                printf("K1键弹起\r\n");
-                break;
-            
-            case KEY_LONG_K1:			/* K1键长按 */
-                printf("K1键长按\r\n");
-                break;
-
-            case KEY_DOWN_K2:			/* K2键按下 */
-                //printf("K2键按下\r\n");
-                break;
-
-            case KEY_UP_K2:				/* K2键弹起 */
-                //printf("K2键弹起\r\n");
-                user_key_num = 1;
-                Mode_Select();
-                break;
-
-            case KEY_LONG_K2:	        /* K2键长按 */
-                //printf("K2键长按\r\n");
-                break;
-
-            case KEY_DOWN_K3:			/* K3键按下 */
-                //printf("K3键按下\r\n");
-                break;
-
-            case KEY_UP_K3:				/* K3键弹起 */
-                //printf("K3键弹起\r\n");
+                case KEY_UP_K1:				/* K1键弹起 */
+                    printf("K1键弹起\r\n");
+                    break;
                 
-                // Target_angle = test_angle[i++];
-                // if(i == 2)
-                //     i = 0;
-                user_key_num = 2;
-                Mode_Select();
-                break;
+                case KEY_LONG_K1:			/* K1键长按 */
+                    printf("K1键长按\r\n");
+                    break;
 
-            case KEY_LONG_K3:	        /* K3键长按 */
-                //printf("K3键长按\r\n");
-                break;
-            
-             case KEY_DOWN_K4:			
-                //printf("K4键按下\r\n");
-                break;
+                case KEY_DOWN_K2:			/* K2键按下 */
+                    //printf("K2键按下\r\n");
+                    break;
 
-            case KEY_UP_K4:				
+                case KEY_UP_K2:				/* K2键弹起 */
+                    //printf("K2键弹起\r\n");
+                    user_key_num = 1;
+                    Mode_Select();
+                    break;
 
-                //trace_KP = 0.25;trace_KI = 0;trace_KD = 0.6;
-                user_key_num = 3;
-                Mode_Select();
-                break;
+                case KEY_LONG_K2:	        /* K2键长按 */
+                    //printf("K2键长按\r\n");
+                    break;
 
-            case KEY_LONG_K4:
-                break;
+                case KEY_DOWN_K3:			/* K3键按下 */
+                    //printf("K3键按下\r\n");
+                    break;
 
-            case KEY_DOWN_K5:			
-                //printf("K5键按下\r\n");
-                break;
+                case KEY_UP_K3:				/* K3键弹起 */
+                    //printf("K3键弹起\r\n");
+                    
+                    // Target_angle = test_angle[i++];
+                    // if(i == 2)
+                    //     i = 0;
+                    user_key_num = 2;
+                    Mode_Select();
+                    break;
 
-            case KEY_UP_K5:				
-                user_key_num = 4;
-                Mode_Select();
-                break;
-
-            case KEY_LONG_K5:	        
-                printf("K5键长按\r\n");
-                break;
+                case KEY_LONG_K3:	        /* K3键长按 */
+                    //printf("K3键长按\r\n");
+                    break;
                 
-            default:
-                /* 其它的键值不处理 */
-                break;
-        }
+                case KEY_DOWN_K4:			
+                    //printf("K4键按下\r\n");
+                    break;
+
+                case KEY_UP_K4:				
+
+                    //trace_KP = 0.25;trace_KI = 0;trace_KD = 0.6;
+                    user_key_num = 3;
+                    Mode_Select();
+                    break;
+
+                case KEY_LONG_K4:
+                    break;
+
+                case KEY_DOWN_K5:			
+                    //printf("K5键按下\r\n");
+                    break;
+
+                case KEY_UP_K5:				
+                    user_key_num = 4;
+                    Mode_Select();
+                    break;
+
+                case KEY_LONG_K5:	        
+                    printf("K5键长按\r\n");
+                    break;
+                    
+                default:
+                    /* 其它的键值不处理 */
+                    break;
+            }
     }
 }
 

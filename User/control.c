@@ -68,19 +68,26 @@ float distant_KP = 0.5, distant_KI = 0, distant_KD = 0;          //距离环PID
 /***********************************************************************************************/ 
 
 
-
-/* 临时任务标志 */
 uint8_t start_flag = 0;
-
+uint8_t task_finish = 0;
 int64_t wait_time = 0;
-
 uint8_t stop_flag = 0;
-uint8_t first_stop_flag = 0;
-//uint8_t stop_time = 0;
+
+
+/********** 临时任务标志 **********/
+uint8_t task_1 = 0;
+
+
+uint8_t task_2 = 0;
+
+
+uint8_t task_3 = 0;
+int64_t task3_nowtime = 0;
+
+
 uint8_t task_4 = 0;
-int64_t task_nowtime = 0;
-
-
+int64_t task4_nowtime = 0;
+/********************************/
 
 
 // 10ms定时器更新中断回调函数
@@ -92,27 +99,28 @@ void TIM1_UP_IRQHandler() {
         
         wait_time = Get_nowtime();
 
-        if (user_key_num == 1 && stop_flag >= 3) {
-            Target_Velocity_1 = 0;
-            Target_Velocity_2 = 0;
-        }
+        Task_Update();
+        // if (user_key_num == 1 && stop_flag >= 3) {
+        //     Target_Velocity_1 = 0;
+        //     Target_Velocity_2 = 0;
+        // }
 
-        if (task_4 == 0 && user_key_num == 4 && stop_flag == 2) {
-            Target_Velocity_1 = 0;
-            Target_Velocity_2 = 0;
-            task_4 = 1;
-            task_nowtime = Get_nowtime();
-            Detect_Special_GrayData_handler.last_run = task_nowtime + 4600;
-        }
+        // if (task_4 == 0 && user_key_num == 4 && stop_flag == 2) {
+        //     Target_Velocity_1 = 0;
+        //     Target_Velocity_2 = 0;
+        //     task_4 = 1;
+        //     task4_nowtime = Get_nowtime();
+        //     Detect_Special_GrayData_handler.last_run = task4_nowtime + 4600;
+        // }
 
-        if (task_4 == 1 && task_nowtime + 5000 <= wait_time) {
-            Target_Velocity_1 = Rpm_Encoder_Cnt(150,13,30,10); 
-            Target_Velocity_2 = Rpm_Encoder_Cnt(150,13,30,10);
-            if(stop_flag >= 3) {
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-            }
-        }
+        // if (task_4 == 1 && task4_nowtime + 5000 <= wait_time) {
+        //     Target_Velocity_1 = Rpm_Encoder_Cnt(150,13,30,10); 
+        //     Target_Velocity_2 = Rpm_Encoder_Cnt(150,13,30,10);
+        //     if(stop_flag >= 3) {
+        //         Target_Velocity_1 = 0;
+        //         Target_Velocity_2 = 0;
+        //     }
+        // }
         
 
         if(start_flag == 1) {
@@ -130,11 +138,12 @@ void TIM1_UP_IRQHandler() {
             //printf("%d\r\n",Moto1);
 
             /* 灰度环 */
+            if(task_3 != 1)
             {
-                // int gray_bias = Gray_PID(Detect_GraySensor_Bias(), 0);
+                int gray_bias = Gray_PID(Detect_GraySensor_Bias(), 0);
 
-                // Moto1 += gray_bias;
-                // Moto2 -= gray_bias;
+                Moto1 += gray_bias;
+                Moto2 -= gray_bias;
             }
 
             /* 摄像头轨迹环 */
@@ -177,6 +186,13 @@ void TIM1_UP_IRQHandler() {
             Moto1 = PWM_restrict(Moto1,Target_Velocity_1);                    /* 位置环输出限幅 */
             Moto2 = PWM_restrict(Moto2,Target_Velocity_2);                    /* 位置环输出限幅 */
             //printf("%d\r\n",Moto1);
+
+            if(task_finish == 1) {
+                Moto1 = 0; 
+                Moto2 = 0; 
+            }
+
+
             /* Motor1速度环 */
             {
                 //Moto1 = Incremental_PID_left(Moto1, Target_Velocity_1);             
@@ -201,68 +217,162 @@ void TIM1_UP_IRQHandler() {
 }
 
 void Mode_Select(void) {
-    uint8_t send_data[3] = {1, 0, 0};
+    uint8_t send_data = 0;
     // PID参数都有默认值。没在任务选择里写，就代表用默认值。
-    switch (user_key_num)
-    {
-    case 1:
-        TIM3 -> CNT = 0; //防上次运行累计
-        TIM4 -> CNT = 0;
+    if(start_flag == 0) {
 
-        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
-        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
+        switch (user_key_num)
+        {
+        case 1:
+            TIM3 -> CNT = 0; //防上次运行累计
+            TIM4 -> CNT = 0;
 
-        trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
+            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
 
-        start_flag = 1;
-        break;
+            trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+            gray_KP = 3.6, gray_KI = 0, gray_KD = 6.9;  //转速=100
 
-    case 2:
-        TIM3 -> CNT = 0; //防上次运行累计
-        TIM4 -> CNT = 0;
+            send_data = 1;
+            start_flag = 1;
+            break;
 
-        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
-        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
+        case 2:
+            TIM3 -> CNT = 0; //防上次运行累计
+            TIM4 -> CNT = 0;
 
-        trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
+            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
 
-        start_flag = 1;
-        break;
+            trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
+            gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100
+            
+            send_data = 2;
+            start_flag = 1;
+            break;
 
-    case 3:
-        TIM3 -> CNT = 0; //防上次运行累计
-        TIM4 -> CNT = 0;
+        case 3:
+            TIM3 -> CNT = 0; //防上次运行累计
+            TIM4 -> CNT = 0;
 
-        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.7, 6.5), 13, 30, 10);
-        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.7, 6.5), 13, 30, 10);
+            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
+            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
 
-        Incremental_KP_1=260; Incremental_KI_1=9.5; Incremental_KD_1=0;        //left  速度环PID
-        Incremental_KP_2=260; Incremental_KI_2=9.5; Incremental_KD_2=0;        //right 速度环PID
+            gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100
 
-        start_flag = 1;
-        break;
+            send_data = 3;
+            start_flag = 1;
+            break;
 
-    case 4:
-        TIM3 -> CNT = 0; //防上次运行累计
-        TIM4 -> CNT = 0;
+        case 4:
+            TIM3 -> CNT = 0; //防上次运行累计
+            TIM4 -> CNT = 0;
 
-        Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(1, 6.5), 13, 30, 10);
-        Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(1, 6.5), 13, 30, 10);
+            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
+            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
 
-        Incremental_KP_1=230; Incremental_KI_1=7; Incremental_KD_1=0;        //left  速度环PID
-        Incremental_KP_2=230; Incremental_KI_2=7; Incremental_KD_2=0;        //right 速度环PID
+            gray_KP = 9.3 , gray_KI = 0, gray_KD = 20.5;  //转速=100gray_KP = 8.2 , gray_KI = 0, gray_KD = 17.7;
 
-        start_flag = 1;
-        break;
+            send_data = 4;
+            start_flag = 1;
+            break;
+        }
+        BLU_SendSingleData(send_data);
     }
-
-    BLU_SendDataPack(send_data, 1);
 }
 
-// 只是管理题目的任务，不是调度任务
+// 只是管理题目的任务，不是调度任务，可以理解为状态机
 void Task_Update(void) {
-    if(user_key_num == 1) {
 
+    //static uint8_t add_speed = 35; // = 10 能实现变道 task_3的速度
+
+    if(task_finish == 0) {
+
+        switch (user_key_num)
+        {
+        case 1:
+            if(task_1 == 0 && stop_flag == 2) {
+                task_1 = 1;
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+                task_finish = 1;
+                BLU_SendSingleData(0);
+            }
+            break;
+
+        case 2:
+            if(task_2 == 0 && stop_flag == 3) {
+                task_2 = 1;
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+                task_finish = 1;
+                BLU_SendSingleData(0);
+            }
+            break;
+
+        case 3:
+            if(task_3 == 0 && passby_cross_num == 3) { //进三叉
+                task_3 = 1;
+                //Target_Velocity_1 += 3;
+                Target_Velocity_2 += 38;
+                task3_nowtime = Get_nowtime() + 500;
+                BLU_SendSingleData(5);
+            }
+
+            if (task_3 == 1 && Get_nowtime() > task3_nowtime) { //在内环加速
+                task_3 = 2;
+                Target_Velocity_1 += 0; // 此时在内环，双电机都加了速
+                Target_Velocity_2 = Target_Velocity_1;
+                gray_KP = 10.8 , gray_KI = 0, gray_KD = 22.7;  //转速=100
+                task3_nowtime = Get_nowtime() + 3000;
+            }
+
+            if(task_3 == 2 && Get_nowtime() > task3_nowtime) { //出三叉减速
+                task_3 = 3;
+                gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100s
+                Target_Velocity_1 -= 0;
+                Target_Velocity_2 -= 0;
+            }
+
+            if (task_3 == 3 && stop_flag == 4) { //停车
+                task_3 = 4;
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+                task_finish = 1;
+                BLU_SendSingleData(0);
+            }
+
+            break;
+
+        case 4:
+            if(task_4 == 0 && stop_flag == 2) {
+                task_4 = 1;
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+                BLU_SendSingleData(0);
+                // TIM3 -> CNT = 0; //防上次运行累计
+                // TIM4 -> CNT = 0;
+                task4_nowtime = Get_nowtime() + 5000;
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 5500; // 原先：Detect_Special_GrayData_handler.last_run = task4_nowtime + 5500;
+            }
+
+            if(task_4 == 1 && Get_nowtime() > task4_nowtime) {
+                task_4 = 2;
+                Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
+                Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
+                BLU_SendSingleData(4);
+            }
+
+            if(task_4 == 2 && stop_flag == 3) {
+                task_4 = 3;
+                Target_Velocity_1 = 0;
+                Target_Velocity_2 = 0;
+                task_finish = 1;
+                BLU_SendSingleData(0);
+            }
+
+            break;
+        }
     }
 }
 
@@ -417,26 +527,23 @@ int Angle_PID(int reality,int target)
 入口参数：实际位置，目标位置
 返回  值：电机PWM
 **************************************************************************/
-int Gray_PID(int reality,int target)
+int Gray_PID(float reality,int target)
 { 	
     static float Bias,pwm,Last_Bias,Integral_bias=0;
     
-    Bias=target-reality;                            /* 计算偏差 */
+    Bias=(float)target-reality;                            /* 计算偏差 */
     
-    if(abs(Bias) > 5)
-        Integral_bias += Bias;	                        /* 偏差累积 */
-    else
-        Integral_bias = 0;
     
-    if(Integral_bias> I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
-    if(Integral_bias< -I_restrict) Integral_bias = -I_restrict;
+    // if(Integral_bias> I_restrict) Integral_bias = I_restrict;   /* 积分限幅 */
+    // if(Integral_bias< -I_restrict) Integral_bias = -I_restrict;
     
     pwm = (gray_KP*Bias)                        /* 比例环节 */
          +(gray_KI*Integral_bias)               /* 积分环节 */
          +(gray_KD*(Bias-Last_Bias));           /* 微分环节 */
     
     Last_Bias=Bias;                                 /* 保存上次偏差 */
-    return pwm;                                     /* 输出结果 */
+    
+    return (int)pwm;                                     /* 输出结果 */
 }
 
 /**************************************************************************

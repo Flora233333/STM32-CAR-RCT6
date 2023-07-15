@@ -5,13 +5,13 @@
 #include "bsp.h"
 
 //  引脚定义
-#define                 KEY1_GPIO_CLK                   RCC_APB2Periph_GPIOA
-#define                 KEY1_GPIO_PORT                  GPIOA			   
-#define                 KEY1_GPIO_PIN		            GPIO_Pin_0
+//#define                 KEY1_GPIO_CLK                   RCC_APB2Periph_GPIOA
+//#define                 KEY1_GPIO_PORT                  GPIOA			   
+//#define                 KEY1_GPIO_PIN		            GPIO_Pin_0
 
-#define                 KEY2_GPIO_CLK                   RCC_APB2Periph_GPIOC
-#define                 KEY2_GPIO_PORT                  GPIOC		   
-#define                 KEY2_GPIO_PIN		            GPIO_Pin_13
+//#define                 KEY2_GPIO_CLK                   RCC_APB2Periph_GPIOC
+//#define                 KEY2_GPIO_PORT                  GPIOC		   
+//#define                 KEY2_GPIO_PIN		            GPIO_Pin_13
 
 #define                 HARD_KEY_NUM                    5	                                        /* 实际硬件按键的个数 */
 #define                 KEY_COUNT                       (sizeof(s_gpio_list) / sizeof(X_GPIO_T))	/* 配置按键的个数(包括组合按键) */

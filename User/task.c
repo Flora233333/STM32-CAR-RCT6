@@ -29,11 +29,14 @@ void Task_1ms(void) {
     //printf("1ms\r\n");
 }
 
+char MPU_str[10];
 void Task_5ms(void) {
     
     if (MPU_FLAG == 1) {
         MPU_Read();
-        DATA_Report();
+        sprintf(MPU_str,"%.01f ", MPU_Data.yaw);
+        OLED_ShowString(2, 7, MPU_str);
+        //DATA_Report();
     }
     //printf("5ms\r\n");
 
@@ -41,13 +44,13 @@ void Task_5ms(void) {
 
 void Task_10ms(void) {
     bsp_KeyScan10ms();
-    
+    //Get_Angle();
     //printf("10ms\r\n");
 
 }
 
 void Task_100ms(void) {
-    
+    //Get_Angle();
     //printf("100ms\r\n");
     
 }
@@ -195,7 +198,7 @@ int8_t Task_Init(void) {
     uint8_t err1 = 0, err2 = 0, err3 = 0, err4 = 0, err5 = 0, err6 = 0, err7 = 0, err8 = 0;
     
     // err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, &Task_1ms_handler);
-    // err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, &Task_5ms_handler);
+    err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, &Task_5ms_handler);
     err3 = Create_Task(Task_10ms, 10, 0, True, 0, NULL, &Task_10ms_handler);
     // err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, &Task_100ms_handler);
     err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, &Task_500ms_handler);

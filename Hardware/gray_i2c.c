@@ -146,10 +146,12 @@ void Get_GrayData(void) {
     }
 }
 
+uint8_t passby_cross_num = 0; // Í¨¹ýÊ®×ÖÂ·¿ÚµÄ´ÎÊý
+
 /* ¼ì²âÌØÊâ»Ò¶ÈÊý¾Ý */
 void Detect_Special_GrayData(void) {
 
-    if(Gray_OK == 1) {
+    if(Gray_OK == 1 && task_finish == 0) {
 
         // if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
         //     gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
@@ -157,41 +159,292 @@ void Detect_Special_GrayData(void) {
         //     Target_angle = -90; // ×ó×ª
         //     //×ó×ª³ÌÐòflag = 1;
         // }
-        if( gray_sensor[1] == 0 && gray_sensor[2] == 0 && gray_sensor[5] == 1 ) { // µ½´ïÁËÒ»´Î½»²æÂ·¿Ú
-            // passby_cross_num ++
+
+
+        //Í£Ö¹¼ì²â
+        // if(gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //     gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+        //     gray_sensor[5] == 0 && gray_sensor[6] == 0 ) {
+
+        //     if(user_key_num == 1) {
+        //         stop_flag ++;
+            
+        //     } 
+        //     // else if(user_key_num == 2) {
+        //     //     pass_line_num ++;
+        //     // }
+        //     // else if(user_key_num == 3) {
+        //     //     pass_line_num ++;
+        //     // }
+        //     else if(user_key_num == 4) {
+        //         stop_flag ++;
+                
+        //     }
+        //     Detect_Special_GrayData_handler.last_run = Get_nowtime() + 500;
+        // }
+
+        // Í£Ö¹¼ì²â
+        if( gray_sensor[0] == 0 && gray_sensor[1] == 0 &&
+            gray_sensor[2] == 0 && gray_sensor[3] == 0 && 
+            gray_sensor[4] == 0 && gray_sensor[5] == 0 &&
+            gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+            if(user_key_num == 1) {
+                stop_flag ++;
+            } 
+            else if(user_key_num == 2) {
+                stop_flag ++;
+            }
+            else if(user_key_num == 3) {
+                stop_flag ++;
+            }
+            else if(user_key_num == 4) {
+                stop_flag ++;
+            }
+
+            if(user_key_num != 0) {
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 600;
+            }
         }
 
-        if( gray_sensor[2] == 0 && gray_sensor[3] == 0 && 
-            gray_sensor[4] == 0 && gray_sensor[5] == 0 ) {
-            // if(user_key_num == 1) {
-            //     stop_flag = 1;
-            // } 
-            // else if(user_key_num == 2) {
-            //     pass_line_num ++;
+        if(user_key_num != 0 && (MPU_Data.yaw < 80 && MPU_Data.yaw > -80)) {
+        // Èý²æÂ·¿Ú¼ì²â
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 0 &&
+                gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+            if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 0 &&
+                gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 0 && gray_sensor[3] == 1 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 1 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 1 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 0 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            // if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && 
+            //     gray_sensor[2] == 0 && gray_sensor[3] == 0 &&
+            //     gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+            //     gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            //     passby_cross_num ++;
+            //     Beep_ON_handler.is_live = True;
+            //     Beep_ON_handler.last_run = Get_nowtime() + 5;
+            //     BEEP_toggle();
+            //     Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             // }
-            // else if(user_key_num == 3) {
-            //     pass_line_num ++;
+
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 0 && gray_sensor[3] == 0 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            // if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && 
+            //     gray_sensor[2] == 0 && gray_sensor[3] == 0 &&
+            //     gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+            //     gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            //     passby_cross_num ++;
+            //     Beep_ON_handler.is_live = True;
+            //     Beep_ON_handler.last_run = Get_nowtime() + 5;
+            //     BEEP_toggle();
+            //     Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             // }
-            // else if(user_key_num == 4) {
-            //     pass_line_num ++;
-            //     delay_flag = 1;
-            //     until_time = Get_nowtime() + 5000;
-            //     stop_flag = 1;
-            // }
+
+            if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && 
+                gray_sensor[2] == 0 && gray_sensor[3] == 1 &&
+                gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && 
+                gray_sensor[2] == 1 && gray_sensor[3] == 0 &&
+                gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
+                gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+                passby_cross_num ++;
+                Beep_ON_handler.is_live = True;
+                Beep_ON_handler.last_run = Get_nowtime() + 5;
+                BEEP_toggle();
+                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
+            }
+
             
         }
     }
     //......
-
 }
 
-
+extern uint8_t task_3;
 /* ¼ì²â»Ò¶È´«¸ÐÆ÷Æ«²î */
-int8_t Detect_GraySensor_Bias(void) {
-    int8_t bias = 0;
+float Detect_GraySensor_Bias(void) {
+    float bias = 0;
+    static float last_bias = 0;
 
     if(Gray_OK == 1) {
+
         
+        // if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //     gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //     bias = last_bias * 0.5; // ·ÉÁË
+        //     return bias;
+        // }
+        // if(task_3 == 2) {
+        //     if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 0 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4ÓÒÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+
+        //     else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+        //         bias = 5; // 4ÓÒÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //         gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //         gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //         gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //         gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //         gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
+        //         gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //         bias = 5; // 4×óÆ«
+        //     }
+        //     if(bias != 0)
+        //         return bias;
+        // }
+
+        if(task_3 == 2) {
+            // if(gray_sensor[0] == 0 || gray_sensor[1] == 0 || 
+            //    gray_sensor[2] == 0 || gray_sensor[3] == 0) {
+            //     bias = 5;
+            // }
+
+            if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 0 ) {
+                bias = 5; 
+            }
+
+            else if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 0 ) {
+                bias = 5; 
+            }
+
+            else if( gray_sensor[0] == 0 || gray_sensor[1] == 0 ) {
+                bias = 3;
+            }
+            
+            if(bias != 0)
+                return bias;
+        }
+
+
         if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 0 && gray_sensor[4] == 0 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
@@ -200,66 +453,138 @@ int8_t Detect_GraySensor_Bias(void) {
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 2; // ÓÒÐ¡Æ«
+            bias = 0.5; // ÓÒÐ¡Æ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = -2; // ×óÐ¡Æ«
+            bias = -0.5; // ×óÐ¡Æ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 0 && 
             gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 3; // ÓÒÖÐÆ«
+            bias = 1; // ÓÒÖÐÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
             gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = -3; // ×óÖÐÆ«
+            bias = -1; // ×óÖÐÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 0 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 4; // ÓÒÖÐ´óÆ«
+            bias = 1.5; // ÓÒÖÐ´óÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = -4; // ×óÖÐ´óÆ«
+            bias = -1.5; // ×óÖÐ´óÆ«
         }
+
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 0 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 2; // 3ÓÒÆ«
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+            bias = -2; // 3×óÆ«
+        }
+
+
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 5; // 4ÓÒÆ«
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 0 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 5; // 4×óÆ«
+        }
+
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 5; // ÓÒ´óÆ«
+            bias = 2.5; // ÓÒ´óÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
-            bias = -5; // ×ó´óÆ«
+            bias = -2.5; // ×ó´óÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 7; // ÓÒ´ó´óÆ«
+            bias = 3; // ÓÒ´ó´óÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
-            bias = -7; // ×ó´ó´óÆ«
+            bias = -3; // ×ó´ó´óÆ«
         }
+
+        // else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+        //     gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //     bias = 3; // ÓÒ´ó´óÆ«
+        // }
+        // else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //     gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //     bias = -3; // ×ó´ó´óÆ«
+        // }
+
+        // else if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+        //     gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+        //     bias = 3.5; // 3ÓÒÆ«
+        // }
+        // else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+        //     gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+        //     gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 1 ) {
+        //     bias = -3.5; // 3×óÆ«
+        // }
+
+
+        else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 0 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 3.5; // 2ÓÒÆ«
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 0 && gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+            bias = -3.5; // 2×óÆ«
+        }
+
+        else if( gray_sensor[0] == 0 && gray_sensor[1] == 0 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
+            bias = 4; // ÍêÈ«ÓÒÆ«
+        }
+        else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
+            gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
+            gray_sensor[5] == 1 && gray_sensor[6] == 0 && gray_sensor[7] == 0 ) {
+            bias = -4; // ÍêÈ«×óÆ«
+        }
+
         else if( gray_sensor[0] == 0 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
-            bias = 8; // ÍêÈ«ÓÒÆ«
+            bias = 4.5; // 1ÓÒÆ«
         }
         else if( gray_sensor[0] == 1 && gray_sensor[1] == 1 && gray_sensor[2] == 1 && 
             gray_sensor[3] == 1 && gray_sensor[4] == 1 && 
             gray_sensor[5] == 1 && gray_sensor[6] == 1 && gray_sensor[7] == 0 ) {
-            bias = -8; // ÍêÈ«×óÆ«
+            bias = -4.5; // 1×óÆ«
         }
         else {
             bias = 0; // ÎÞÆ«²î
         }
+        bias = last_bias * 0.2 + bias * 0.8; //Ð¡²å¸öÖµ
+        last_bias = bias;
     }
     
     return bias;

@@ -17,6 +17,9 @@ struct MPU6050				//MPU6050结构体
 //    其他,错误代码
 u8 MPU_Init(void)
 { 
+    MPU_Data.pitch = 0;
+    MPU_Data.roll = 0;
+    MPU_Data.yaw = 0;
     mpu6050.flag = 0;                                //采集成功标志位初始化
 	mpu6050.speed = 0;								 //上报速度初始化
     

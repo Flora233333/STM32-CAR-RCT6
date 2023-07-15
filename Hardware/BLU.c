@@ -51,7 +51,7 @@ void USART3_IRQHandler(void)
         USART_ClearITPendingBit(USART3, USART_IT_RXNE);
 
         static uint8_t Count = 0;
-        static uint8_t rxbuf[3];
+        static uint8_t rxbuf[3] = {0, 0, 0};
 
         re = USART_ReceiveData(USART3);
         
@@ -91,6 +91,18 @@ void BLU_SendDataPack(u8 * Data, u16 SIZE) {
 		USART_SendData(USART3,Data[i]);
 		while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
 	}
+
+    USART_SendData(USART3, 0xFE);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
+}
+
+void BLU_SendSingleData(u8 Data) {
+
+    USART_SendData(USART3, 0xFF);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
+
+	USART_SendData(USART3, Data);
+	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位
 
     USART_SendData(USART3, 0xFE);
 	while(USART_GetFlagStatus(USART3,USART_FLAG_TXE) == RESET); //发送完了标志位

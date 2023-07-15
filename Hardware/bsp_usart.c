@@ -115,10 +115,10 @@ int USART1_IRQHandler(void)
 int fputc(int ch, FILE *f)
 {
 		/* 发送一个字节数据到串口 */
-		USART_SendData(USART3, (uint8_t) ch);
+		USART_SendData(USART1, (uint8_t) ch);
 		
 		/* 等待发送完毕 */
-		while (USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);		
+		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);		
 	
 		return (ch);
 }
@@ -198,7 +198,6 @@ void UART4_IRQHandler(void) //中断接收处理函数；
             return;
             //error = 0;
         }
-
         if(flag == 1 && data != ' ') {
             if(data < '0' || data > '9') {
                 if(data == 'm') {

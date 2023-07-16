@@ -1,6 +1,6 @@
 #include "BLU.h"
 
-__IO uint8_t BLU_rxdata[4];
+// __IO uint8_t BLU_rxdata[4];
 
 
 void BLU_Uart3_Init(void) {
@@ -39,44 +39,6 @@ void BLU_Uart3_Init(void) {
     USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);  
 
     USART_Cmd(USART3,ENABLE);
-}
-
-
-void USART3_IRQHandler(void)
-{ 
-    uint8_t re = 0;
-
-	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) 
-	{
-        USART_ClearITPendingBit(USART3, USART_IT_RXNE);
-
-        static uint8_t Count = 0;
-        static uint8_t rxbuf[3] = {0, 0, 0};
-
-        re = USART_ReceiveData(USART3);
-        
-        rxbuf[Count] = re;
-
-        if (rxbuf[Count] == 0xFF || Count > 0)
-            Count++;
-        else
-            Count = 0;
-        
-        if (Count == 3) {
-
-            Count = 0;
-
-            if (rxbuf[2] == 0xFE)
-            {
-                BLU_rxdata[0] = rxbuf[1];
-                //BLU_rxdata[1] = rxbuf[1];
-                //BLU_rxdata[2] = rxbuf[2];
-                //OLED_ShowNum(1,1,BLU_rxdata[1],2);
-            }
-            
-        }
-        
-	}
 }
 
 

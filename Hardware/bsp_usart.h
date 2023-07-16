@@ -28,8 +28,8 @@
 #define  DEBUG_USART_IRQ                USART1_IRQn
 #define  DEBUG_USART_IRQHandler         USART1_IRQHandler
 
-extern __IO int capture_data[4];
-extern __IO uint16_t distant;
+// extern __IO int capture_data[4];
+// extern __IO uint16_t distant;
 
 void USART1_Init(void);
 void UART4_Init(void);

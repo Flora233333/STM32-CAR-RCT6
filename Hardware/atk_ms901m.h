@@ -67,8 +67,6 @@
 #define ATK_MS901M_FRAME_ID_TYPE_UPLOAD     0       /* ATK-MS901M主动上传帧ID */
 #define ATK_MS901M_FRAME_ID_TYPE_ACK        1       /* ATK-MS901M应答帧ID */
 
-extern uint8_t Gyro_OK;
-
 /* 姿态角数据结构体 */
 typedef struct
 {
@@ -173,8 +171,9 @@ typedef enum
 #define ATK_MS901M_ETIMEOUT 3                       /* 超时错误 */
 
 extern atk_ms901m_attitude_data_t attitude_dat;     /* 姿态角数据 */
-extern float ANGLE_STATIC_BIAS;                     /* 角度静差 */
-extern float Now_Angle;                             /* 当前角度 */
+// extern float ANGLE_STATIC_BIAS;                     /* 角度静差 */
+// extern float Now_Angle;                             /* 当前角度 */
+// extern uint8_t Gyro_OK;                             /* 陀螺仪校准完成标志 */
 
 /* 操作函数 */
 uint8_t atk_ms901m_read_reg_by_id(uint8_t id, uint8_t *dat, uint32_t timeout);                                                                      /* 通过帧ID读取ATK-MS901M寄存器 */

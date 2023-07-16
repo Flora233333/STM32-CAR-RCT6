@@ -664,6 +664,16 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\bsp_usart.h</FilePath>
             </File>
+            <File>
+              <FileName>protocol_process.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\System\protocol_process.c</FilePath>
+            </File>
+            <File>
+              <FileName>protocol_process.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\System\protocol_process.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -4,16 +4,16 @@
 #include "bsp.h"
 
 
-extern __IO int Target_Velocity_1, Reality_Velocity_1;   /* 目标速度，实际速度 */
-extern __IO int Target_Position_1, Reality_Position_1;   /* 目标位置，实际位置 */
+// extern __IO int Target_Velocity_1, Reality_Velocity_1;   /* 目标速度，实际速度 */
+// extern __IO int Target_Position_1, Reality_Position_1;   /* 目标位置，实际位置 */
 
-extern __IO int Target_Velocity_2, Reality_Velocity_2;   /* 目标速度，实际速度 */
-extern __IO int Target_Position_2, Reality_Position_2;   /* 目标位置，实际位置 */
+// extern __IO int Target_Velocity_2, Reality_Velocity_2;   /* 目标速度，实际速度 */
+// extern __IO int Target_Position_2, Reality_Position_2;   /* 目标位置，实际位置 */
 
-extern int Target_angle;
-extern uint8_t start_flag;
-extern uint8_t stop_flag;
-extern uint8_t task_finish;
+// extern int Target_angle;
+// extern uint8_t start_flag;
+// extern uint8_t stop_flag;
+// extern uint8_t task_finish;
 
 
 void Mode_Select(void);

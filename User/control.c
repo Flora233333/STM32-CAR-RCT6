@@ -100,28 +100,6 @@ void TIM1_UP_IRQHandler() {
         wait_time = Get_nowtime();
 
         Task_Update();
-        // if (user_key_num == 1 && stop_flag >= 3) {
-        //     Target_Velocity_1 = 0;
-        //     Target_Velocity_2 = 0;
-        // }
-
-        // if (task_4 == 0 && user_key_num == 4 && stop_flag == 2) {
-        //     Target_Velocity_1 = 0;
-        //     Target_Velocity_2 = 0;
-        //     task_4 = 1;
-        //     task4_nowtime = Get_nowtime();
-        //     Detect_Special_GrayData_handler.last_run = task4_nowtime + 4600;
-        // }
-
-        // if (task_4 == 1 && task4_nowtime + 5000 <= wait_time) {
-        //     Target_Velocity_1 = Rpm_Encoder_Cnt(150,13,30,10); 
-        //     Target_Velocity_2 = Rpm_Encoder_Cnt(150,13,30,10);
-        //     if(stop_flag >= 3) {
-        //         Target_Velocity_1 = 0;
-        //         Target_Velocity_2 = 0;
-        //     }
-        // }
-        
 
         if(start_flag == 1) {
             
@@ -224,57 +202,20 @@ void Mode_Select(void) {
         switch (user_key_num)
         {
         case 1:
-            TIM3 -> CNT = 0; //防上次运行累计
-            TIM4 -> CNT = 0;
-
-            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
-            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.3, 6.5), 13, 30, 10);
-
-            trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
-            gray_KP = 3.6, gray_KI = 0, gray_KD = 6.9;  //转速=100
-
-            send_data = 1;
             start_flag = 1;
             break;
 
         case 2:
-            TIM3 -> CNT = 0; //防上次运行累计
-            TIM4 -> CNT = 0;
-
-            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
-            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
-
-            trace_KP = 0.25; trace_KI = 0; trace_KD = 0.6;
-            gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100
-            
+            OLED_ShowString(1, 1, "shoting!");
             send_data = 2;
-            start_flag = 1;
             break;
 
         case 3:
-            TIM3 -> CNT = 0; //防上次运行累计
-            TIM4 -> CNT = 0;
-
-            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
-            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.5, 6.5), 13, 30, 10);
-
-            gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100
-
             send_data = 3;
-            start_flag = 1;
             break;
 
         case 4:
-            TIM3 -> CNT = 0; //防上次运行累计
-            TIM4 -> CNT = 0;
-
-            Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
-            Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
-
-            gray_KP = 9.3 , gray_KI = 0, gray_KD = 20.5;  //转速=100gray_KP = 8.2 , gray_KI = 0, gray_KD = 17.7;
-
             send_data = 4;
-            start_flag = 1;
             break;
         }
         BLU_SendSingleData(send_data);
@@ -291,85 +232,18 @@ void Task_Update(void) {
         switch (user_key_num)
         {
         case 1:
-            if(task_1 == 0 && stop_flag == 2) {
-                task_1 = 1;
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-                task_finish = 1;
-                BLU_SendSingleData(0);
-            }
-            break;
 
+            
+
+            break;
         case 2:
-            if(task_2 == 0 && stop_flag == 3) {
-                task_2 = 1;
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-                task_finish = 1;
-                BLU_SendSingleData(0);
-            }
+
             break;
-
         case 3:
-            if(task_3 == 0 && passby_cross_num == 3) { //进三叉
-                task_3 = 1;
-                //Target_Velocity_1 += 3;
-                Target_Velocity_2 += 38;
-                task3_nowtime = Get_nowtime() + 500;
-                BLU_SendSingleData(5);
-            }
-
-            if (task_3 == 1 && Get_nowtime() > task3_nowtime) { //在内环加速
-                task_3 = 2;
-                Target_Velocity_1 += 0; // 此时在内环，双电机都加了速
-                Target_Velocity_2 = Target_Velocity_1;
-                gray_KP = 10.8 , gray_KI = 0, gray_KD = 22.7;  //转速=100
-                task3_nowtime = Get_nowtime() + 3000;
-            }
-
-            if(task_3 == 2 && Get_nowtime() > task3_nowtime) { //出三叉减速
-                task_3 = 3;
-                gray_KP = 6.3 , gray_KI = 0, gray_KD = 13.7;  //转速=100s
-                Target_Velocity_1 -= 0;
-                Target_Velocity_2 -= 0;
-            }
-
-            if (task_3 == 3 && stop_flag == 4) { //停车
-                task_3 = 4;
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-                task_finish = 1;
-                BLU_SendSingleData(0);
-            }
 
             break;
 
         case 4:
-            if(task_4 == 0 && stop_flag == 2) {
-                task_4 = 1;
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-                BLU_SendSingleData(0);
-                // TIM3 -> CNT = 0; //防上次运行累计
-                // TIM4 -> CNT = 0;
-                task4_nowtime = Get_nowtime() + 5000;
-                Detect_Special_GrayData_handler.last_run = Get_nowtime() + 5500; // 原先：Detect_Special_GrayData_handler.last_run = task4_nowtime + 5500;
-            }
-
-            if(task_4 == 1 && Get_nowtime() > task4_nowtime) {
-                task_4 = 2;
-                Target_Velocity_1 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
-                Target_Velocity_2 = Rpm_Encoder_Cnt(Cal_Speed2Rpm(0.6, 6.5), 13, 30, 10);
-                BLU_SendSingleData(4);
-            }
-
-            if(task_4 == 2 && stop_flag == 3) {
-                task_4 = 3;
-                Target_Velocity_1 = 0;
-                Target_Velocity_2 = 0;
-                task_finish = 1;
-                BLU_SendSingleData(0);
-            }
 
             break;
         }

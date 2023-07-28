@@ -17,7 +17,7 @@ Task_handle Task_500ms_handler;
 
 Task_handle Get_Angle_Static_Bias_handler;
 Task_handle Detect_Special_GrayData_handler;
-Task_handle Beep_ON_handler;
+//Task_handle Beep_ON_handler;
 /*****************************************************************************/
 
 
@@ -50,6 +50,10 @@ void Task_10ms(void) {
 }
 
 void Task_100ms(void) {
+    if(Beep_flag) {
+        --Beep_flag;
+        BEEP_toggle();
+    }
     //Get_Angle();
     //printf("100ms\r\n");
     
@@ -187,10 +191,6 @@ void Get_Angle_Static_Bias(void) {
     //Detect_Special_GrayData_handler->is_live = True;
 }
 
-void Beep_ON(void) {
-    BEEP_toggle();
-}
-
 /****************************/
 
 
@@ -200,12 +200,12 @@ int8_t Task_Init(void) {
     // err1 = Create_Task(Task_1ms, 1, 0, True, 0, NULL, &Task_1ms_handler);
     err2 = Create_Task(Task_5ms, 5, 0, True, 0, NULL, &Task_5ms_handler);
     err3 = Create_Task(Task_10ms, 10, 0, True, 0, NULL, &Task_10ms_handler);
-    // err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, &Task_100ms_handler);
+    err4 = Create_Task(Task_100ms, 100, 0, True, 0, NULL, &Task_100ms_handler);
     err5 = Create_Task(Task_500ms, 500, 0, True, 0, NULL, &Task_500ms_handler);
 
     err6 = Create_Task(Get_Angle_Static_Bias, 4000, 0, True, 3, NULL, &Get_Angle_Static_Bias_handler);
     err7 = Create_Task(Detect_Special_GrayData, 5, 0, True, 0, NULL, &Detect_Special_GrayData_handler);
-    err8 = Create_Task(Beep_ON, 200, 0, True, 3, NULL, &Beep_ON_handler);
+    // err8 = Create_Task(Beep_ON, 200, 0, True, 3, NULL, &Beep_ON_handler);
 
     if (err1 || err2 || err3 || err4 || err5 || err6 || err7 || err8) {
         configASSERT("_TASK_CREATE_FAILED_");

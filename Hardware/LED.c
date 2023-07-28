@@ -9,7 +9,7 @@ void LED_Init(void) {
 	GPIO_InitStructure.GPIO_Pin = PIN;
  	GPIO_Init(GPIOx, &GPIO_InitStructure);
 	
-	GPIO_ResetBits(GPIOx, PIN);
+	GPIO_SetBits(GPIOx, PIN);
 }
 
 void LED_toggle(void) {

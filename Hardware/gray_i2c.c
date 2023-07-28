@@ -202,9 +202,7 @@ void Detect_Special_GrayData(void) {
             }
 
             if(user_key_num != 0) {
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                            Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 600;
             }
         }
@@ -216,9 +214,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
             if( gray_sensor[0] == 1 && gray_sensor[1] == 0 && 
@@ -226,9 +222,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -237,9 +231,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -248,9 +240,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -259,9 +249,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -270,9 +258,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -292,9 +278,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -314,9 +298,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 0 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 
@@ -325,9 +307,7 @@ void Detect_Special_GrayData(void) {
                 gray_sensor[4] == 1 && gray_sensor[5] == 1 && 
                 gray_sensor[6] == 1 && gray_sensor[7] == 1 ) {
                 passby_cross_num ++;
-                Beep_ON_handler.is_live = True;
-                Beep_ON_handler.last_run = Get_nowtime() + 5;
-                BEEP_toggle();
+                Beep_Run();
                 Detect_Special_GrayData_handler.last_run = Get_nowtime() + 1000;
             }
 

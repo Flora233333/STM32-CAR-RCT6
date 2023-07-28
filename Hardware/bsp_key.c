@@ -3,11 +3,11 @@
 
 
 static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] = {
-	{GPIOB, GPIO_Pin_5, 0},		/* K1 */
-	{GPIOA, GPIO_Pin_11, 0},	    /* K2 */
-    {GPIOA, GPIO_Pin_0, 0},     /* K3 */
-    {GPIOA, GPIO_Pin_4, 0},
-    {GPIOA, GPIO_Pin_5, 0}
+	{GPIOA, GPIO_Pin_0, 0},		/* K1 */
+	{GPIOA, GPIO_Pin_4, 0},	    /* K2 */
+    {GPIOA, GPIO_Pin_5, 0},     /* K3 */
+    {GPIOA, GPIO_Pin_11, 0},
+    {GPIOC, GPIO_Pin_4, 0}
 };	
 
 static KEY_T s_tBtn[KEY_COUNT] = {0};

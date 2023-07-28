@@ -56,7 +56,7 @@ extern Task_handle Task_500ms_handler;
 
 extern Task_handle Get_Angle_Static_Bias_handler;
 extern Task_handle Detect_Special_GrayData_handler;
-extern Task_handle Beep_ON_handler;
+//extern Task_handle Beep_ON_handler;
 /*****************************************************************************/
 
 

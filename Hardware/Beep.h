@@ -10,6 +10,6 @@
 
 void BEEP_Init(void);
 void BEEP_toggle(void);
-    
+void Beep_Run(void);
     
 #endif

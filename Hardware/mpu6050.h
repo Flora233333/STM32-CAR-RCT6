@@ -77,14 +77,14 @@
 #define MPU_ADDR				0X68
 
 
-typedef struct {
-    float pitch;
-    float roll;
-    float yaw;
-} MPU;
+// typedef struct {
+//     float pitch;
+//     float roll;
+//     float yaw;
+// } MPU;
 
-extern MPU MPU_Data;
-extern uint8_t MPU_FLAG;
+// extern MPU MPU_Data;
+// extern uint8_t MPU_FLAG;
 
 u8 MPU_Init(void); 								
 u8 MPU_Write_Len(u8 addr,u8 reg,u8 len,u8 *buf);

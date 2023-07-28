@@ -1,5 +1,7 @@
 #include "Beep.h"
 
+__IO uint8_t Beep_flag = 0;
+
 void BEEP_Init(void) {
 	RCC_APB2PeriphClockCmd(BEEP_RCC_APB2Periph_GPIOx, ENABLE);
 	
@@ -14,4 +16,8 @@ void BEEP_Init(void) {
 
 void BEEP_toggle(void) {
     BEEP_GPIOx->ODR ^= BEEP_PIN;
+}
+
+void Beep_Run(void) {
+    Beep_flag = 2;
 }

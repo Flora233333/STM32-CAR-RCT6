@@ -11,19 +11,20 @@ void bsp_init(void) {
     PWM_Init();
 	Encoder_Init();
     bsp_key_init();
-    Gray_Init();
-    BLU_Init();
-    UART4_Init();
-    
+    //Gray_Init();
+    BLU_Uart3_Init();
+    //UART4_Init();
+
     //atk_ms901m_init(115200);
 
     //MPU_Init();
     //DMP_Init();
     
     BEEP_Init();
-    BEEP_toggle();
     
     Task_Init();
+    
+    Beep_Run();
 }
 
 void info_print(void) {
@@ -43,7 +44,7 @@ void Key_map(uint16_t KeyCode) {
     if (KeyCode != KEY_NONE)
     {
         //printf("ucKeyCode = %d\r\n", ucKeyCode);
-        if(start_flag == 0)
+        //if(start_flag == 0)
             switch (KeyCode)
             {
                 case KEY_DOWN_K1:			/* K1键按下 */
@@ -52,15 +53,11 @@ void Key_map(uint16_t KeyCode) {
                     break;
 
                 case KEY_UP_K1:				/* K1键弹起 */
-                    printf("K1键弹起\r\n");
-                    break;
-                
-                case KEY_LONG_K1:			/* K1键长按 */
-                    printf("K1键长按\r\n");
+                    //printf("K1键弹起\r\n");
                     break;
 
                 case KEY_DOWN_K2:			/* K2键按下 */
-                    //printf("K2键按下\r\n");
+                    printf("K2键按下\r\n");
                     break;
 
                 case KEY_UP_K2:				/* K2键弹起 */
@@ -74,7 +71,7 @@ void Key_map(uint16_t KeyCode) {
                     break;
 
                 case KEY_DOWN_K3:			/* K3键按下 */
-                    //printf("K3键按下\r\n");
+                    printf("K3键按下\r\n");
                     break;
 
                 case KEY_UP_K3:				/* K3键弹起 */
@@ -92,7 +89,7 @@ void Key_map(uint16_t KeyCode) {
                     break;
                 
                 case KEY_DOWN_K4:			
-                    //printf("K4键按下\r\n");
+                    printf("K4键按下\r\n");
                     break;
 
                 case KEY_UP_K4:				
@@ -102,21 +99,16 @@ void Key_map(uint16_t KeyCode) {
                     Mode_Select();
                     break;
 
-                case KEY_LONG_K4:
-                    break;
-
                 case KEY_DOWN_K5:			
-                    //printf("K5键按下\r\n");
+                    printf("K5键按下\r\n");
+                    Beep_Run();
                     break;
 
                 case KEY_UP_K5:				
                     user_key_num = 4;
-                    Mode_Select();
+                    //Mode_Select();
                     break;
 
-                case KEY_LONG_K5:	        
-                    printf("K5键长按\r\n");
-                    break;
                     
                 default:
                     /* 其它的键值不处理 */
